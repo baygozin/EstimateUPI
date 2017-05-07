@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using EstimatesName;
@@ -110,6 +111,7 @@ namespace EstimatesAssembly {
             iniSet.TxtImagePath = txtImagePath.Text;
             iniSet.TxtToolsFilesPath = txtToolsFilesPath.Text;
             iniSet.ListTypeDocument = cbTypeDocumentation.Text;
+            iniSet.TbNameBuilding = tbNameBuilding.Text;
             iniSet.TbNameObject = tbNameObject.Text;
             iniSet.TbCodeObject = tbCodeObject.Text;
             iniSet.NumVolumeNumber = numVolumeNumber.Text;
@@ -126,6 +128,8 @@ namespace EstimatesAssembly {
             iniSet.CbQuarter = cbQuarter.Checked;
             iniSet.CbInsertSignOE = cbInsertSignOE.Checked;
             iniSet.CbInsertSignLE = cbInsertSignLE.Checked;
+            iniSet.CbInsertSignSS = cbInsertSignSS.Checked;
+            iniSet.CbInsertSignLR = cbInsertSignLR.Checked;
             iniSet.CbRebuild = cbRebuild.Checked;
             iniSet.NumModification = numModification.Text;
             iniSet.TbDocumentNumber = tbDocumentNumber.Text;
@@ -158,6 +162,7 @@ namespace EstimatesAssembly {
                     txtImagePath.Text = iniSet.TxtImagePath;
                     txtToolsFilesPath.Text = iniSet.TxtToolsFilesPath;
                     cbTypeDocumentation.Text = iniSet.ListTypeDocument;
+                    tbNameBuilding.Text = iniSet.TbNameBuilding;
                     tbNameObject.Text = iniSet.TbNameObject;
                     tbCodeObject.Text = iniSet.TbCodeObject;
                     numVolumeNumber.Text = iniSet.NumVolumeNumber;
@@ -177,6 +182,8 @@ namespace EstimatesAssembly {
                     cbQuarter.Checked = iniSet.CbQuarter;
                     cbInsertSignOE.Checked = iniSet.CbInsertSignOE;
                     cbInsertSignLE.Checked = iniSet.CbInsertSignLE;
+                    cbInsertSignSS.Checked = iniSet.CbInsertSignSS;
+                    cbInsertSignLR.Checked = iniSet.CbInsertSignLR;
                     cbRebuild.Checked = iniSet.CbRebuild;
                     if (iniSet.CbGip != null) {
                         cbGip.Items.AddRange(iniSet.CbGip);
@@ -203,7 +210,7 @@ namespace EstimatesAssembly {
 
         // Изменение наименование книги
         private void ChangeNameBook() {
-            _book.NameBook = @"Vol-" + numVolumeNumber.Text + "-" + numBookNumber.Text
+            _book.NameBook = @"Том-" + numVolumeNumber.Text + "-" + numBookNumber.Text
                + "-" + numPartNumber.Text;
             _book.PathBook = txtEsimatePath.Text + "\\";
             lblNameBook.Text = _book.PathBook + _book.NameBook;
@@ -215,12 +222,12 @@ namespace EstimatesAssembly {
             if (dlgOpenFile.FileNames.Equals("")) {
                 return;
             }
-            _book.AddSheetNew(dlgOpenFile.FileNames, ref pgBar);
+            _book.AddSheetNew(dlgOpenFile.FileNames);
             if (chbSort.Checked) {
-                _book.SortWorksheets(ref pgBar);
+                _book.SortWorksheets();
             }
             if (chbNumeric.Checked) {
-                _book.NumberingPage(ref pgBar);
+                _book.NumberingPage();
             }
             if (chbSave.Checked) {
                 _book.SaveWorkbook();
@@ -233,7 +240,7 @@ namespace EstimatesAssembly {
             lstSheet.Items.Clear();
             if (list == null) return;
             foreach (var str in list) {
-                    lstSheet.Items.Add(new ListViewItem(new[] {str}));
+                lstSheet.Items.Add(new ListViewItem(new[] { str }));
             }
         }
 
@@ -248,7 +255,7 @@ namespace EstimatesAssembly {
                 MessageBox.Show(@"Пустая книга.");
                 return;
             }
-            _book.DeleteSheet(lstSheet.SelectedItems, ref pgBar);
+            _book.DeleteSheet(lstSheet.SelectedItems);
             FillListSheet(_book.GetListSheet());
         }
 
@@ -256,8 +263,7 @@ namespace EstimatesAssembly {
         private void checkBox1_CheckedChanged(object sender, EventArgs e) {
             if (cbShowExcel.Checked) {
                 _book.ShowExcel(true);
-            }
-            else {
+            } else {
                 _book.ShowExcel(false);
             }
         }
@@ -297,7 +303,7 @@ namespace EstimatesAssembly {
         // Пересортировка элементов в таблице
         private void btnSortSheet_Click(object sender, EventArgs e) {
             // сортировка таблиц в книге...
-            _book.SortWorksheets(ref pgBar);
+            _book.SortWorksheets();
             FillListSheet(_book.GetListSheet());
         }
 
@@ -309,7 +315,7 @@ namespace EstimatesAssembly {
 
         // Перенумерация сборки
         private void btnNumbering_Click(object sender, EventArgs e) {
-            _book.NumberingPage(ref pgBar);
+            _book.NumberingPage();
             FillListSheet(_book.GetListSheet());
         }
 
@@ -322,38 +328,25 @@ namespace EstimatesAssembly {
         }
 
         private void button3_Click(object sender, EventArgs e) {
-            _book.AdaptionSheets(ref pgBar);
+            _book.AdaptionSheets();
         }
 
-        private void tbLname6_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tbLname7_TextChanged(object sender, EventArgs e)
-        {
+        private void cbStageDevelope_SelectedIndexChanged(object sender, EventArgs e) {
 
         }
 
-        private void cbStageDevelope_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnToolsFilesPath_Click_1(object sender, EventArgs e)
-        {
+        private void btnToolsFilesPath_Click_1(object sender, EventArgs e) {
             folderBrowserDialog.SelectedPath = txtEsimatePath.Text;
             folderBrowserDialog.ShowDialog();
-            txtToolsFilesPath.Text = folderBrowserDialog.SelectedPath; 
+            txtToolsFilesPath.Text = folderBrowserDialog.SelectedPath;
             SaveConfig();
         }
 
-        private void MainFormAsm_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyData == (Keys.Insert))
-            {
+        private void MainFormAsm_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyData == (Keys.Insert)) {
                 btnAddSheet_Click(sender, e);
             }
         }
+
     }
 }

@@ -6,6 +6,7 @@ namespace EstimatesAssembly {
         public string TxtImagePath;
         public string TxtToolsFilesPath;
         public string ListTypeDocument;
+        public string TbNameBuilding;
         public string TbNameObject;
         public string TbCodeObject;
         public string NumVolumeNumber;
@@ -30,6 +31,8 @@ namespace EstimatesAssembly {
         public Boolean CbQuarter;
         public Boolean CbInsertSignOE;
         public Boolean CbInsertSignLE;
+        public Boolean CbInsertSignSS;
+        public Boolean CbInsertSignLR;
         public Boolean CbRebuild;
         public Boolean CbSort;
         public Boolean CbNumeric;

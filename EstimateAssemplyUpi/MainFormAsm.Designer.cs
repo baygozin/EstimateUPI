@@ -39,6 +39,8 @@
             this.chbSort = new System.Windows.Forms.CheckBox();
             this.button2 = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.cbInsertSignSS = new System.Windows.Forms.CheckBox();
+            this.cbInsertSignLR = new System.Windows.Forms.CheckBox();
             this.cbInsertSignLE = new System.Windows.Forms.CheckBox();
             this.label23 = new System.Windows.Forms.Label();
             this.cbPriceLevelO = new System.Windows.Forms.DateTimePicker();
@@ -100,12 +102,11 @@
             this.label7 = new System.Windows.Forms.Label();
             this.cbGip = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.tbNameObject = new System.Windows.Forms.TextBox();
+            this.tbNameBuilding = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.tabPageEstimate = new System.Windows.Forms.TabPage();
             this.button3 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.pgBar = new System.Windows.Forms.ProgressBar();
             this.cbShowExcel = new System.Windows.Forms.CheckBox();
             this.lblNameBook = new System.Windows.Forms.Label();
             this.btnSaveBook = new System.Windows.Forms.Button();
@@ -118,6 +119,8 @@
             this.lstSheet = new System.Windows.Forms.ListView();
             this.columnSheetName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabControlMain = new System.Windows.Forms.TabControl();
+            this.tbNameObject = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
             this.ctxMenuFileList.SuspendLayout();
             this.tabPageSetup.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -158,7 +161,7 @@
             // 
             this.btnClose.Image = ((System.Drawing.Image)(resources.GetObject("btnClose.Image")));
             this.btnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnClose.Location = new System.Drawing.Point(818, 562);
+            this.btnClose.Location = new System.Drawing.Point(826, 591);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(134, 30);
             this.btnClose.TabIndex = 1;
@@ -188,7 +191,7 @@
             this.tabPageSetup.Location = new System.Drawing.Point(4, 22);
             this.tabPageSetup.Name = "tabPageSetup";
             this.tabPageSetup.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSetup.Size = new System.Drawing.Size(956, 526);
+            this.tabPageSetup.Size = new System.Drawing.Size(956, 555);
             this.tabPageSetup.TabIndex = 0;
             this.tabPageSetup.Text = "Настройки";
             this.tabPageSetup.UseVisualStyleBackColor = true;
@@ -198,9 +201,9 @@
             this.groupBox5.Controls.Add(this.chbSave);
             this.groupBox5.Controls.Add(this.chbNumeric);
             this.groupBox5.Controls.Add(this.chbSort);
-            this.groupBox5.Location = new System.Drawing.Point(6, 434);
+            this.groupBox5.Location = new System.Drawing.Point(490, 458);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(297, 49);
+            this.groupBox5.Size = new System.Drawing.Size(460, 49);
             this.groupBox5.TabIndex = 33;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "При загрузке смет";
@@ -239,7 +242,7 @@
             // 
             this.button2.Image = ((System.Drawing.Image)(resources.GetObject("button2.Image")));
             this.button2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.button2.Location = new System.Drawing.Point(812, 482);
+            this.button2.Location = new System.Drawing.Point(816, 519);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(134, 30);
             this.button2.TabIndex = 31;
@@ -249,6 +252,8 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.cbInsertSignSS);
+            this.groupBox4.Controls.Add(this.cbInsertSignLR);
             this.groupBox4.Controls.Add(this.cbInsertSignLE);
             this.groupBox4.Controls.Add(this.label23);
             this.groupBox4.Controls.Add(this.cbPriceLevelO);
@@ -257,17 +262,37 @@
             this.groupBox4.Controls.Add(this.cbPriceLevelL);
             this.groupBox4.Controls.Add(this.label5);
             this.groupBox4.Controls.Add(this.cbQuarter);
-            this.groupBox4.Location = new System.Drawing.Point(6, 296);
+            this.groupBox4.Location = new System.Drawing.Point(8, 354);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(478, 132);
+            this.groupBox4.Size = new System.Drawing.Size(478, 153);
             this.groupBox4.TabIndex = 30;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Обработка смет";
             // 
+            // cbInsertSignSS
+            // 
+            this.cbInsertSignSS.AutoSize = true;
+            this.cbInsertSignSS.Location = new System.Drawing.Point(6, 104);
+            this.cbInsertSignSS.Name = "cbInsertSignSS";
+            this.cbInsertSignSS.Size = new System.Drawing.Size(146, 17);
+            this.cbInsertSignSS.TabIndex = 38;
+            this.cbInsertSignSS.Text = "Включать подписи в СС";
+            this.cbInsertSignSS.UseVisualStyleBackColor = true;
+            // 
+            // cbInsertSignLR
+            // 
+            this.cbInsertSignLR.AutoSize = true;
+            this.cbInsertSignLR.Location = new System.Drawing.Point(175, 127);
+            this.cbInsertSignLR.Name = "cbInsertSignLR";
+            this.cbInsertSignLR.Size = new System.Drawing.Size(147, 17);
+            this.cbInsertSignLR.TabIndex = 37;
+            this.cbInsertSignLR.Text = "Включать подписи в ЛР";
+            this.cbInsertSignLR.UseVisualStyleBackColor = true;
+            // 
             // cbInsertSignLE
             // 
             this.cbInsertSignLE.AutoSize = true;
-            this.cbInsertSignLE.Location = new System.Drawing.Point(6, 81);
+            this.cbInsertSignLE.Location = new System.Drawing.Point(175, 104);
             this.cbInsertSignLE.Name = "cbInsertSignLE";
             this.cbInsertSignLE.Size = new System.Drawing.Size(147, 17);
             this.cbInsertSignLE.TabIndex = 36;
@@ -293,7 +318,7 @@
             // cbRebuild
             // 
             this.cbRebuild.AutoSize = true;
-            this.cbRebuild.Location = new System.Drawing.Point(362, 35);
+            this.cbRebuild.Location = new System.Drawing.Point(173, 58);
             this.cbRebuild.Name = "cbRebuild";
             this.cbRebuild.Size = new System.Drawing.Size(88, 17);
             this.cbRebuild.TabIndex = 33;
@@ -303,7 +328,7 @@
             // cbInsertSignOE
             // 
             this.cbInsertSignOE.AutoSize = true;
-            this.cbInsertSignOE.Location = new System.Drawing.Point(6, 104);
+            this.cbInsertSignOE.Location = new System.Drawing.Point(6, 127);
             this.cbInsertSignOE.Name = "cbInsertSignOE";
             this.cbInsertSignOE.Size = new System.Drawing.Size(147, 17);
             this.cbInsertSignOE.TabIndex = 30;
@@ -348,9 +373,9 @@
             this.groupBox2.Controls.Add(this.label13);
             this.groupBox2.Controls.Add(this.tbDocumentNumber);
             this.groupBox2.Controls.Add(this.label14);
-            this.groupBox2.Location = new System.Drawing.Point(490, 296);
+            this.groupBox2.Location = new System.Drawing.Point(490, 354);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(460, 132);
+            this.groupBox2.Size = new System.Drawing.Size(460, 98);
             this.groupBox2.TabIndex = 25;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Корректировка";
@@ -423,6 +448,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label20);
+            this.groupBox1.Controls.Add(this.tbNameObject);
             this.groupBox1.Controls.Add(this.btnToolsFilesPath);
             this.groupBox1.Controls.Add(this.txtToolsFilesPath);
             this.groupBox1.Controls.Add(this.label3);
@@ -466,11 +493,11 @@
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.cbGip);
             this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.tbNameObject);
+            this.groupBox1.Controls.Add(this.tbNameBuilding);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Location = new System.Drawing.Point(6, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(940, 284);
+            this.groupBox1.Size = new System.Drawing.Size(940, 342);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Общие";
@@ -478,9 +505,9 @@
             // btnToolsFilesPath
             // 
             this.btnToolsFilesPath.Image = ((System.Drawing.Image)(resources.GetObject("btnToolsFilesPath.Image")));
-            this.btnToolsFilesPath.Location = new System.Drawing.Point(899, 162);
+            this.btnToolsFilesPath.Location = new System.Drawing.Point(899, 165);
             this.btnToolsFilesPath.Name = "btnToolsFilesPath";
-            this.btnToolsFilesPath.Size = new System.Drawing.Size(30, 30);
+            this.btnToolsFilesPath.Size = new System.Drawing.Size(30, 22);
             this.btnToolsFilesPath.TabIndex = 78;
             this.btnToolsFilesPath.UseVisualStyleBackColor = true;
             // 
@@ -536,10 +563,11 @@
             // 
             // tbCertificate
             // 
-            this.tbCertificate.Location = new System.Drawing.Point(486, 76);
+            this.tbCertificate.Location = new System.Drawing.Point(485, 87);
             this.tbCertificate.Name = "tbCertificate";
             this.tbCertificate.Size = new System.Drawing.Size(449, 20);
             this.tbCertificate.TabIndex = 73;
+            this.tbCertificate.Text = "Свидетельство";
             // 
             // label2
             // 
@@ -553,7 +581,7 @@
             // label29
             // 
             this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(486, 59);
+            this.label29.Location = new System.Drawing.Point(483, 71);
             this.label29.Name = "label29";
             this.label29.Size = new System.Drawing.Size(84, 13);
             this.label29.TabIndex = 72;
@@ -562,9 +590,9 @@
             // btnEstimatePathAndName
             // 
             this.btnEstimatePathAndName.Image = ((System.Drawing.Image)(resources.GetObject("btnEstimatePathAndName.Image")));
-            this.btnEstimatePathAndName.Location = new System.Drawing.Point(899, 205);
+            this.btnEstimatePathAndName.Location = new System.Drawing.Point(899, 209);
             this.btnEstimatePathAndName.Name = "btnEstimatePathAndName";
-            this.btnEstimatePathAndName.Size = new System.Drawing.Size(30, 30);
+            this.btnEstimatePathAndName.Size = new System.Drawing.Size(30, 22);
             this.btnEstimatePathAndName.TabIndex = 19;
             this.btnEstimatePathAndName.UseVisualStyleBackColor = true;
             this.btnEstimatePathAndName.Click += new System.EventHandler(this.btnEstimatePathAndName_Click);
@@ -572,9 +600,11 @@
             // tbCustomer
             // 
             this.tbCustomer.Location = new System.Drawing.Point(486, 32);
+            this.tbCustomer.Multiline = true;
             this.tbCustomer.Name = "tbCustomer";
-            this.tbCustomer.Size = new System.Drawing.Size(448, 20);
+            this.tbCustomer.Size = new System.Drawing.Size(448, 33);
             this.tbCustomer.TabIndex = 71;
+            this.tbCustomer.Text = "Заказчик";
             // 
             // txtImagePath
             // 
@@ -597,9 +627,9 @@
             // btnImagePath
             // 
             this.btnImagePath.Image = ((System.Drawing.Image)(resources.GetObject("btnImagePath.Image")));
-            this.btnImagePath.Location = new System.Drawing.Point(899, 244);
+            this.btnImagePath.Location = new System.Drawing.Point(899, 248);
             this.btnImagePath.Name = "btnImagePath";
-            this.btnImagePath.Size = new System.Drawing.Size(30, 30);
+            this.btnImagePath.Size = new System.Drawing.Size(30, 22);
             this.btnImagePath.TabIndex = 21;
             this.btnImagePath.UseVisualStyleBackColor = true;
             this.btnImagePath.Click += new System.EventHandler(this.btnImagePath_Click);
@@ -607,9 +637,9 @@
             // btnMadeInDelete
             // 
             this.btnMadeInDelete.Image = ((System.Drawing.Image)(resources.GetObject("btnMadeInDelete.Image")));
-            this.btnMadeInDelete.Location = new System.Drawing.Point(438, 241);
+            this.btnMadeInDelete.Location = new System.Drawing.Point(441, 312);
             this.btnMadeInDelete.Name = "btnMadeInDelete";
-            this.btnMadeInDelete.Size = new System.Drawing.Size(30, 30);
+            this.btnMadeInDelete.Size = new System.Drawing.Size(30, 22);
             this.btnMadeInDelete.TabIndex = 16;
             this.btnMadeInDelete.UseVisualStyleBackColor = true;
             this.btnMadeInDelete.Click += new System.EventHandler(this.btnMadeInDelete_Click);
@@ -617,25 +647,25 @@
             // btnGipDelete
             // 
             this.btnGipDelete.Image = ((System.Drawing.Image)(resources.GetObject("btnGipDelete.Image")));
-            this.btnGipDelete.Location = new System.Drawing.Point(438, 201);
+            this.btnGipDelete.Location = new System.Drawing.Point(441, 270);
             this.btnGipDelete.Name = "btnGipDelete";
-            this.btnGipDelete.Size = new System.Drawing.Size(30, 30);
+            this.btnGipDelete.Size = new System.Drawing.Size(30, 22);
             this.btnGipDelete.TabIndex = 12;
             this.btnGipDelete.UseVisualStyleBackColor = true;
             this.btnGipDelete.Click += new System.EventHandler(this.btnGipDelete_Click);
             // 
             // tbCodeObject
             // 
-            this.tbCodeObject.Location = new System.Drawing.Point(5, 87);
+            this.tbCodeObject.Location = new System.Drawing.Point(8, 139);
             this.tbCodeObject.Name = "tbCodeObject";
-            this.tbCodeObject.Size = new System.Drawing.Size(467, 20);
+            this.tbCodeObject.Size = new System.Drawing.Size(463, 20);
             this.tbCodeObject.TabIndex = 2;
             this.tbCodeObject.Text = "Шифр объекта";
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(2, 71);
+            this.label9.Location = new System.Drawing.Point(8, 123);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(81, 13);
             this.label9.TabIndex = 69;
@@ -643,7 +673,7 @@
             // 
             // tbInventoryNumber
             // 
-            this.tbInventoryNumber.Location = new System.Drawing.Point(5, 168);
+            this.tbInventoryNumber.Location = new System.Drawing.Point(8, 233);
             this.tbInventoryNumber.Name = "tbInventoryNumber";
             this.tbInventoryNumber.Size = new System.Drawing.Size(147, 20);
             this.tbInventoryNumber.TabIndex = 7;
@@ -652,7 +682,7 @@
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(2, 152);
+            this.label21.Location = new System.Drawing.Point(5, 217);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(90, 13);
             this.label21.TabIndex = 67;
@@ -660,7 +690,7 @@
             // 
             // dateToStamp
             // 
-            this.dateToStamp.Location = new System.Drawing.Point(604, 124);
+            this.dateToStamp.Location = new System.Drawing.Point(603, 126);
             this.dateToStamp.Name = "dateToStamp";
             this.dateToStamp.Size = new System.Drawing.Size(160, 20);
             this.dateToStamp.TabIndex = 17;
@@ -668,7 +698,7 @@
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(600, 108);
+            this.label19.Location = new System.Drawing.Point(600, 111);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(78, 13);
             this.label19.TabIndex = 63;
@@ -677,7 +707,7 @@
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(104, 111);
+            this.label17.Location = new System.Drawing.Point(107, 176);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(38, 13);
             this.label17.TabIndex = 60;
@@ -686,7 +716,7 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(53, 110);
+            this.label16.Location = new System.Drawing.Point(56, 175);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(37, 13);
             this.label16.TabIndex = 59;
@@ -695,7 +725,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(5, 110);
+            this.label15.Location = new System.Drawing.Point(8, 175);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(28, 13);
             this.label15.TabIndex = 58;
@@ -703,14 +733,14 @@
             // 
             // numPartNumber
             // 
-            this.numPartNumber.Location = new System.Drawing.Point(107, 127);
+            this.numPartNumber.Location = new System.Drawing.Point(110, 192);
             this.numPartNumber.Name = "numPartNumber";
             this.numPartNumber.Size = new System.Drawing.Size(45, 20);
             this.numPartNumber.TabIndex = 5;
             // 
             // numBookNumber
             // 
-            this.numBookNumber.Location = new System.Drawing.Point(56, 127);
+            this.numBookNumber.Location = new System.Drawing.Point(59, 192);
             this.numBookNumber.Name = "numBookNumber";
             this.numBookNumber.Size = new System.Drawing.Size(45, 20);
             this.numBookNumber.TabIndex = 4;
@@ -722,7 +752,7 @@
             // 
             // numVolumeNumber
             // 
-            this.numVolumeNumber.Location = new System.Drawing.Point(5, 127);
+            this.numVolumeNumber.Location = new System.Drawing.Point(8, 192);
             this.numVolumeNumber.Name = "numVolumeNumber";
             this.numVolumeNumber.Size = new System.Drawing.Size(45, 20);
             this.numVolumeNumber.TabIndex = 3;
@@ -743,16 +773,16 @@
             "Смета на строительство объектов капитального строительства",
             "Ведомость объемов работ",
             "Объектные и локальные сметы"});
-            this.cbTypeDocumentation.Location = new System.Drawing.Point(158, 127);
+            this.cbTypeDocumentation.Location = new System.Drawing.Point(161, 192);
             this.cbTypeDocumentation.Name = "cbTypeDocumentation";
-            this.cbTypeDocumentation.Size = new System.Drawing.Size(314, 21);
+            this.cbTypeDocumentation.Size = new System.Drawing.Size(310, 21);
             this.cbTypeDocumentation.TabIndex = 6;
             this.cbTypeDocumentation.Text = "Объектные и локальные сметы";
             // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(155, 111);
+            this.label12.Location = new System.Drawing.Point(158, 176);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(101, 13);
             this.label12.TabIndex = 49;
@@ -764,9 +794,9 @@
             this.cbStageDevelope.Items.AddRange(new object[] {
             "Рабочая документация",
             "Проектная документация"});
-            this.cbStageDevelope.Location = new System.Drawing.Point(158, 167);
+            this.cbStageDevelope.Location = new System.Drawing.Point(161, 232);
             this.cbStageDevelope.Name = "cbStageDevelope";
-            this.cbStageDevelope.Size = new System.Drawing.Size(314, 21);
+            this.cbStageDevelope.Size = new System.Drawing.Size(310, 21);
             this.cbStageDevelope.TabIndex = 8;
             this.cbStageDevelope.Text = "Проектная документация";
             this.cbStageDevelope.SelectedIndexChanged += new System.EventHandler(this.cbStageDevelope_SelectedIndexChanged);
@@ -774,7 +804,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(155, 152);
+            this.label11.Location = new System.Drawing.Point(158, 217);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(105, 13);
             this.label11.TabIndex = 47;
@@ -782,15 +812,15 @@
             // 
             // tbHeadDepartment
             // 
-            this.tbHeadDepartment.Location = new System.Drawing.Point(5, 247);
+            this.tbHeadDepartment.Location = new System.Drawing.Point(8, 312);
             this.tbHeadDepartment.Name = "tbHeadDepartment";
             this.tbHeadDepartment.Size = new System.Drawing.Size(176, 20);
             this.tbHeadDepartment.TabIndex = 13;
-            this.tbHeadDepartment.Text = "ФИО начальника отдела";
+            this.tbHeadDepartment.Text = "ФИО руководителя группы";
             // 
             // tbChiefEngineer
             // 
-            this.tbChiefEngineer.Location = new System.Drawing.Point(5, 207);
+            this.tbChiefEngineer.Location = new System.Drawing.Point(8, 272);
             this.tbChiefEngineer.Name = "tbChiefEngineer";
             this.tbChiefEngineer.Size = new System.Drawing.Size(176, 20);
             this.tbChiefEngineer.TabIndex = 9;
@@ -799,7 +829,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(2, 191);
+            this.label10.Location = new System.Drawing.Point(5, 256);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(98, 13);
             this.label10.TabIndex = 44;
@@ -808,9 +838,9 @@
             // btnMadeInAdd
             // 
             this.btnMadeInAdd.Image = ((System.Drawing.Image)(resources.GetObject("btnMadeInAdd.Image")));
-            this.btnMadeInAdd.Location = new System.Drawing.Point(402, 241);
+            this.btnMadeInAdd.Location = new System.Drawing.Point(405, 311);
             this.btnMadeInAdd.Name = "btnMadeInAdd";
-            this.btnMadeInAdd.Size = new System.Drawing.Size(30, 30);
+            this.btnMadeInAdd.Size = new System.Drawing.Size(30, 22);
             this.btnMadeInAdd.TabIndex = 15;
             this.btnMadeInAdd.UseVisualStyleBackColor = true;
             this.btnMadeInAdd.Click += new System.EventHandler(this.btnMadeIn_Click);
@@ -818,9 +848,9 @@
             // btnGipAdd
             // 
             this.btnGipAdd.Image = ((System.Drawing.Image)(resources.GetObject("btnGipAdd.Image")));
-            this.btnGipAdd.Location = new System.Drawing.Point(402, 201);
+            this.btnGipAdd.Location = new System.Drawing.Point(407, 270);
             this.btnGipAdd.Name = "btnGipAdd";
-            this.btnGipAdd.Size = new System.Drawing.Size(30, 30);
+            this.btnGipAdd.Size = new System.Drawing.Size(30, 22);
             this.btnGipAdd.TabIndex = 11;
             this.btnGipAdd.UseVisualStyleBackColor = true;
             this.btnGipAdd.Click += new System.EventHandler(this.btnGip_Click);
@@ -828,7 +858,7 @@
             // cbMadeIn
             // 
             this.cbMadeIn.FormattingEnabled = true;
-            this.cbMadeIn.Location = new System.Drawing.Point(187, 246);
+            this.cbMadeIn.Location = new System.Drawing.Point(190, 311);
             this.cbMadeIn.Name = "cbMadeIn";
             this.cbMadeIn.Size = new System.Drawing.Size(211, 21);
             this.cbMadeIn.TabIndex = 14;
@@ -837,7 +867,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(184, 231);
+            this.label8.Location = new System.Drawing.Point(187, 296);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(72, 13);
             this.label8.TabIndex = 37;
@@ -846,16 +876,16 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(2, 231);
+            this.label7.Location = new System.Drawing.Point(5, 296);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(100, 13);
+            this.label7.Size = new System.Drawing.Size(117, 13);
             this.label7.TabIndex = 35;
-            this.label7.Text = "Начальник отдела";
+            this.label7.Text = "Руководитель группы";
             // 
             // cbGip
             // 
             this.cbGip.FormattingEnabled = true;
-            this.cbGip.Location = new System.Drawing.Point(187, 205);
+            this.cbGip.Location = new System.Drawing.Point(190, 270);
             this.cbGip.Name = "cbGip";
             this.cbGip.Size = new System.Drawing.Size(211, 21);
             this.cbGip.TabIndex = 10;
@@ -864,25 +894,25 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(184, 191);
+            this.label6.Location = new System.Drawing.Point(187, 256);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(142, 13);
             this.label6.TabIndex = 33;
             this.label6.Text = "Главный инженер проекта";
             // 
-            // tbNameObject
+            // tbNameBuilding
             // 
-            this.tbNameObject.Location = new System.Drawing.Point(4, 32);
-            this.tbNameObject.Multiline = true;
-            this.tbNameObject.Name = "tbNameObject";
-            this.tbNameObject.Size = new System.Drawing.Size(467, 33);
-            this.tbNameObject.TabIndex = 1;
-            this.tbNameObject.Text = "Наименование стройки";
+            this.tbNameBuilding.Location = new System.Drawing.Point(8, 32);
+            this.tbNameBuilding.Multiline = true;
+            this.tbNameBuilding.Name = "tbNameBuilding";
+            this.tbNameBuilding.Size = new System.Drawing.Size(463, 33);
+            this.tbNameBuilding.TabIndex = 1;
+            this.tbNameBuilding.Text = "Наименование стройки";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(2, 16);
+            this.label4.Location = new System.Drawing.Point(8, 16);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(127, 13);
             this.label4.TabIndex = 29;
@@ -892,7 +922,6 @@
             // 
             this.tabPageEstimate.Controls.Add(this.button3);
             this.tabPageEstimate.Controls.Add(this.button1);
-            this.tabPageEstimate.Controls.Add(this.pgBar);
             this.tabPageEstimate.Controls.Add(this.cbShowExcel);
             this.tabPageEstimate.Controls.Add(this.lblNameBook);
             this.tabPageEstimate.Controls.Add(this.btnSaveBook);
@@ -914,14 +943,12 @@
             // 
             // button3
             // 
-            this.button3.Enabled = false;
             this.button3.Location = new System.Drawing.Point(795, 54);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(134, 30);
             this.button3.TabIndex = 33;
             this.button3.Text = "Сдвиг разрывов";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Visible = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button1
@@ -934,15 +961,6 @@
             this.button1.TabIndex = 14;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
-            // 
-            // pgBar
-            // 
-            this.pgBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pgBar.Location = new System.Drawing.Point(6, 510);
-            this.pgBar.Name = "pgBar";
-            this.pgBar.Size = new System.Drawing.Size(714, 13);
-            this.pgBar.TabIndex = 2;
             // 
             // cbShowExcel
             // 
@@ -1050,7 +1068,7 @@
             this.lstSheet.HideSelection = false;
             this.lstSheet.Location = new System.Drawing.Point(6, 19);
             this.lstSheet.Name = "lstSheet";
-            this.lstSheet.Size = new System.Drawing.Size(714, 491);
+            this.lstSheet.Size = new System.Drawing.Size(714, 498);
             this.lstSheet.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.lstSheet.TabIndex = 1;
             this.lstSheet.UseCompatibleStateImageBehavior = false;
@@ -1071,14 +1089,32 @@
             this.tabControlMain.Location = new System.Drawing.Point(4, 4);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(964, 552);
+            this.tabControlMain.Size = new System.Drawing.Size(964, 581);
             this.tabControlMain.TabIndex = 0;
+            // 
+            // tbNameObject
+            // 
+            this.tbNameObject.Location = new System.Drawing.Point(8, 87);
+            this.tbNameObject.Multiline = true;
+            this.tbNameObject.Name = "tbNameObject";
+            this.tbNameObject.Size = new System.Drawing.Size(463, 33);
+            this.tbNameObject.TabIndex = 79;
+            this.tbNameObject.Text = "Наименование объекта";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(8, 71);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(128, 13);
+            this.label20.TabIndex = 80;
+            this.label20.Text = "Наименование объекта";
             // 
             // MainFormAsm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(972, 599);
+            this.ClientSize = new System.Drawing.Size(972, 628);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.tabControlMain);
             this.KeyPreview = true;
@@ -1185,12 +1221,11 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox cbGip;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox tbNameObject;
+        private System.Windows.Forms.TextBox tbNameBuilding;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TabPage tabPageEstimate;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ProgressBar pgBar;
         private System.Windows.Forms.CheckBox cbShowExcel;
         private System.Windows.Forms.Label lblNameBook;
         private System.Windows.Forms.Button btnSaveBook;
@@ -1203,6 +1238,10 @@
         private System.Windows.Forms.ListView lstSheet;
         private System.Windows.Forms.ColumnHeader columnSheetName;
         private System.Windows.Forms.TabControl tabControlMain;
+        private System.Windows.Forms.CheckBox cbInsertSignSS;
+        private System.Windows.Forms.CheckBox cbInsertSignLR;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.TextBox tbNameObject;
     }
 }
 
