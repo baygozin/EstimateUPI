@@ -10,12 +10,14 @@ using DocumentFormat.OpenXml.Math;
 using Microsoft.Office.Core;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.VisualBasic;
+using Microsoft.Win32;
 using Application = Microsoft.Office.Interop.Excel.Application;
 using Path = System.IO.Path;
 using Shape = Microsoft.Office.Interop.Excel.Shape;
 using Workbook = Microsoft.Office.Interop.Excel.Workbook;
 using Worksheet = Microsoft.Office.Interop.Excel.Worksheet;
 using XlHAlign = Microsoft.Office.Interop.Excel.XlHAlign;
+using PrinterSettings = System.Drawing.Printing.PrinterSettings;
 
 namespace EstimatesAssembly {
     class BookEstimates {
@@ -40,7 +42,6 @@ namespace EstimatesAssembly {
         private const int EndPos = 59;
         private int delta = 0;
 
-
         public string NameBook {
             get { return _nameBook; }
             set { _nameBook = value; }
@@ -51,10 +52,33 @@ namespace EstimatesAssembly {
             set { _pathBook = value; }
         }
 
+        private string printer = @"Microsoft Print to PDF";
+        private string port = String.Empty;
+
         public BookEstimates() {
             Ex = new Application { Visible = false, DisplayAlerts = false };
         }
 
+        public void SetActivePrinterPDF() {
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Devices");
+            if (key != null) {
+                object value = key.GetValue(printer);
+                if (value != null) {
+                    string[] values = value.ToString().Split(',');
+                    if (values.Length >= 2) {
+                        port = values[1];
+                    }
+                }
+            }
+            if (!Ex.ActivePrinter.StartsWith(printer)) {
+                var split = Ex.ActivePrinter.Split(' ');
+                if (split.Length >= 3) {
+                    var prn = String.Format("{0} ({1})", printer,  port);
+                    Ex.ActivePrinter = prn;
+                }
+                //MessageBox.Show("Test2", "Test2", MessageBoxButtons.OK);
+            }
+        }
         public void ShowExcel(Boolean show) {
             Ex.Visible = show;
         }
@@ -127,6 +151,7 @@ namespace EstimatesAssembly {
                     Wb.Sheets[myvar].Delete();
                 }
             }
+            SetActivePrinterPDF();
         }
 
         // Обработка сводного сметного расчета
@@ -166,33 +191,34 @@ namespace EstimatesAssembly {
                 var rowMadeIn = rowEnd + 9;
                 // вставим надписи и ФИО
                 Range rangeWork = sheet.Cells[rowGip, "C"];
-                rangeWork.Value2 = @"Главный инженер проекта";
+                rangeWork.Value2 = @"Главный инженер проекта :";
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignRight;
                 rangeWork = sheet.Cells[rowBoss, "C"];
-                rangeWork.Value2 = @"Руководитель группы смет";
+                rangeWork.Value2 = @"Руководитель группы смет :";
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignRight;
                 rangeWork = sheet.Cells[rowMadeIn, "C"];
-                rangeWork.Value2 = @"Составил";
+                rangeWork.Value2 = @"Составил :";
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignRight;
-                rangeWork = sheet.Cells[rowGip, "F"];
-                rangeWork.Value2 = MainFormAsm.iniSet.CbGipText;
+
+                rangeWork = sheet.Cells[rowGip, "D"];
+                rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.CbGipText;
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                rangeWork = sheet.Cells[rowBoss, "F"];
-                rangeWork.Value2 = MainFormAsm.iniSet.TbHeadDepartment;
+                rangeWork = sheet.Cells[rowBoss, "D"];
+                rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.TbHeadDepartment;
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                rangeWork = sheet.Cells[rowMadeIn, "F"];
-                rangeWork.Value2 = MainFormAsm.iniSet.CbMadeIn;
+                rangeWork = sheet.Cells[rowMadeIn, "D"];
+                rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.CbMadeInText;
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignLeft;
                 // Вставим картинки
                 if (MainFormAsm.iniSet.CbInsertSignSS) {
                     if (!MainFormAsm.iniSet.CbGip.Equals("")) {
-                        InsertImage(ref sheet, rowGip, 4, MainFormAsm.iniSet.CbGipText);
+                        InsertImage(ref sheet, rowGip, 5, MainFormAsm.iniSet.CbGipText);
                     }
                     if (!MainFormAsm.iniSet.TbHeadDepartment.Equals("")) {
-                        InsertImage(ref sheet, rowBoss, 4, MainFormAsm.iniSet.TbHeadDepartment);
+                        InsertImage(ref sheet, rowBoss, 5, MainFormAsm.iniSet.TbHeadDepartment);
                     }
                     if (!MainFormAsm.iniSet.CbMadeIn.Equals("")) {
-                        InsertImage(ref sheet, rowMadeIn, 4, MainFormAsm.iniSet.CbMadeInText);
+                        InsertImage(ref sheet, rowMadeIn, 5, MainFormAsm.iniSet.CbMadeInText);
                     }
                 }
             }
@@ -240,33 +266,37 @@ namespace EstimatesAssembly {
                 range20.UnMerge();
                 sheet.Range[sheet.Cells[stroka1, "B"], sheet.Cells[stroka2, "Q"]].WrapText = false;
                 sheet.Cells[stroka1, "D"] = @"Составил :";
-                sheet.Cells[stroka1, "I"] = firstName;
+                sheet.Cells[stroka1, "D"].HorizontalAlignment = XlHAlign.xlHAlignRight;
+                sheet.Cells[stroka1, "E"] = "_____________________________" + firstName;
                 sheet.Cells[stroka2, "D"] = @"Проверил :";
-                sheet.Cells[stroka2, "I"] = secondName;
+                sheet.Cells[stroka2, "D"].HorizontalAlignment = XlHAlign.xlHAlignRight;
+                sheet.Cells[stroka2, "E"] = "_____________________________" + secondName;
             } else if (stroka1 == 0 && stroka2 != 0) {
                 range20 = sheet.Range[sheet.Cells[stroka2, "A"], sheet.Cells[stroka2 + 1, "A"]];
                 range20.Value2 = "";
                 range20.UnMerge();
                 sheet.Range[sheet.Cells[stroka2, "B"], sheet.Cells[stroka2, "Q"]].WrapText = false;
                 sheet.Cells[stroka2, "D"] = @"Проверил :";
-                sheet.Cells[stroka2, "I"] = secondName;
+                sheet.Cells[stroka2, "D"].HorizontalAlignment = XlHAlign.xlHAlignRight;
+                sheet.Cells[stroka2, "E"] = "_____________________________" + secondName;
             } else if (stroka1 != 0 && stroka2 == 0) {
                 range20 = sheet.Range[sheet.Cells[stroka1, "A"], sheet.Cells[stroka1 + 1, "A"]];
                 range20.Value2 = "";
                 range20.UnMerge();
                 sheet.Range[sheet.Cells[stroka1, "B"], sheet.Cells[stroka1, "Q"]].WrapText = false;
                 sheet.Cells[stroka1, "D"] = @"Составил :";
-                sheet.Cells[stroka1, "I"] = firstName;
+                sheet.Cells[stroka1, "D"].HorizontalAlignment = XlHAlign.xlHAlignRight;
+                sheet.Cells[stroka1, "E"] = "_____________________________" + firstName;
             }
             // Вставим подписи в ЛРС если нужно
             // Подписи в конце страницы =======================================================
             if (MainFormAsm.iniSet.CbInsertSignLR) {
                 // вставим надписи и ФИО
                 if (!firstName.Equals("") && stroka1 != 0) {
-                    InsertImage(ref sheet, stroka1, 6, firstName);
+                    InsertImage(ref sheet, stroka1, 5, firstName);
                 }
                 if (!secondName.Equals("") && stroka2 != 0) {
-                    InsertImage(ref sheet, stroka2, 6, secondName);
+                    InsertImage(ref sheet, stroka2, 5, secondName);
                 }
             }
 
@@ -491,19 +521,18 @@ namespace EstimatesAssembly {
             }
             foreach (Worksheet worksheet in mainBook.Sheets) {
                 if (!worksheet.Name.Equals(@"Титул")
-                    && !worksheet.Name.Equals("@Огл")
+                    && !worksheet.Name.Equals(@"Оглавление")
                     && !worksheet.Name.Equals(@"Разрешение")) {
                     worksheet.Activate();
-                    Range rr = worksheet.Range["A1", "A1"];
-                    rr.Activate();
                     HPageBreaks hbreak = worksheet.HPageBreaks;
-                    int pageCount = worksheet.HPageBreaks.Count;
+                    int pageCount = hbreak.Count - 1;
                     if (pageCount != 0) {
+                        var a = hbreak.Item[pageCount];
                         r = hbreak.Item[pageCount].Location;
                         int t = FindLastRow(worksheet);
                         int t1 = r.Row;
                         if ((t - t1) < 12 && (t - t1) > 0) {
-                            var tmpr = worksheet.Range["A" + Convert.ToString(r.Row - 12)];
+                            var tmpr = worksheet.Range["A" + Convert.ToString(r.Row - 5)];
                             hbreak.Item[pageCount].Location = tmpr;
                         }
                     }
@@ -512,8 +541,27 @@ namespace EstimatesAssembly {
         }
 
         private int FindLastRow(Worksheet worksheet) {
-            var aaa = worksheet.Cells[worksheet.Rows.Count, 1];
-            return ((Range)worksheet.Cells[worksheet.Rows.Count, 1]).get_End(XlDirection.xlUp).Row;
+            //            Range last = worksheet.Cells.SpecialCells(XlCellType.xlCellTypeLastCell, Type.Missing);
+            //            return last.Row;
+            int lastUsedRow = 1;
+            Range range = worksheet.UsedRange;
+            for (int i = 1; i < range.Columns.Count; i++) {
+                int lastRow = range.Rows.Count;
+                for (int j = range.Rows.Count; j > 0; j--) {
+                    if (lastUsedRow < lastRow) {
+                        lastRow = j;
+                        if (!String.IsNullOrWhiteSpace(Convert.ToString((worksheet.Cells[j, i] as Range).Value))) {
+                            if (lastUsedRow < lastRow)
+                                lastUsedRow = lastRow;
+                            if (lastUsedRow == range.Rows.Count)
+                                return lastUsedRow - 1;
+                            break;
+                        }
+                    } else
+                        break;
+                }
+            }
+            return lastUsedRow;
         }
 
         public void NumberingPage() {
@@ -528,7 +576,7 @@ namespace EstimatesAssembly {
                     if (worksheet.Name.Contains(@"Разрешение"))
                     worksheet.Delete();
                 else
-                        if (worksheet.Name.Contains(@"Огл"))
+                        if (worksheet.Name.Contains(@"Оглавление"))
                     worksheet.Delete();
                 else
                             if (worksheet.Name.Contains(@"Лист"))
@@ -540,21 +588,25 @@ namespace EstimatesAssembly {
             tmpContent.Close();
             Worksheet ogl = mainBook.Sheets[1];
             //Worksheet title = mainBook.Sheets[1];
-            ogl.Name = @"Огл";
+            ogl.Name = @"Оглавление";
             ogl.Cells[2, 5] = _nameBook;
+            ogl.PageSetup.Zoom = false;
 
             Worksheet title = mainBook.Sheets.Add(mainBook.Sheets.Item[1], Type.Missing, 1, XlSheetType.xlWorksheet);
             title.Name = @"Титул";
-
+            title.PageSetup.Zoom = false;
+            
+            // Включим разрывы страниц
             foreach (Worksheet worksheet in mainBook.Sheets) {
                 worksheet.Select();
                 Ex.ActiveWindow.View = XlWindowView.xlPageBreakPreview;
             }
+
             foreach (Worksheet worksheet in mainBook.Sheets) {
                 worksheet.Select();
+                worksheet.PageSetup.Zoom = false;
                 worksheet.PageSetup.FitToPagesWide = 1;
                 worksheet.PageSetup.FitToPagesTall = 999;
-                worksheet.PageSetup.Zoom = false;
                 if (worksheet.VPageBreaks.Count > 0) {
                     worksheet.VPageBreaks.get_Item(1).DragOff(XlDirection.xlToRight, 1);
                 }
@@ -574,7 +626,7 @@ namespace EstimatesAssembly {
                 worksheet.PageSetup.CenterHeader = " ";
                 worksheet.PageSetup.RightHeader = " ";
                 a = GetColumnsSheet(worksheet);
-                if (!worksheet.Name.Equals("Титул") && !worksheet.Name.Equals("Огл")) {
+                if (!worksheet.Name.Equals("Титул") && !worksheet.Name.Equals("Оглавление")) {
                     ogl.Cells[ns, 4] = ns - delta - 2;
                     ogl.Cells[ns, 5] = a.col1;
                     ogl.Cells[ns, 8] = a.col2;
@@ -590,6 +642,7 @@ namespace EstimatesAssembly {
                     delta = 10;
                 }
                 x = worksheet.PageSetup.FirstPageNumber + worksheet.PageSetup.Pages.Count;
+                worksheet.PageSetup.Zoom = 100;
             }
             delta = 0;
             title.Delete();
@@ -620,6 +673,7 @@ namespace EstimatesAssembly {
 
         // Заполним Разрешение
         private void ResolutionFill(ref Worksheet resolution) {
+            resolution.UsedRange.Font.Name = "Times New Roman";
             resolution.Cells[9, 5] = MainFormAsm.iniSet.NumModification;
             resolution.Cells[9, 7] = MainFormAsm.iniSet.TbPageNumber;
             resolution.Cells[46, 8] = MainFormAsm.iniSet.TbChiefEngineer;
@@ -653,9 +707,9 @@ namespace EstimatesAssembly {
 
         // Заполним титул
         private void TitleFill(ref Worksheet title) {
-
-//            title.Cells[8, 3] = MainFormAsm.iniSet.TbCertificate; // Свидетельство
-//            title.Cells[10, 3] = MainFormAsm.iniSet.TbCustomer; // Заказчик
+            title.UsedRange.Font.Name = "Times New Roman";
+            //            title.Cells[8, 3] = MainFormAsm.iniSet.TbCertificate; // Свидетельство
+            //            title.Cells[10, 3] = MainFormAsm.iniSet.TbCustomer; // Заказчик
             title.Cells[14, 2] = MainFormAsm.iniSet.TbNameBuilding;
             title.Cells[19, 2] = MainFormAsm.iniSet.TbNameObject;
             title.Cells[25, 2] = MainFormAsm.iniSet.CbStageDevelope;
@@ -941,23 +995,27 @@ namespace EstimatesAssembly {
                 range20.UnMerge();
                 sheet.Range[sheet.Cells[stroka1, "B"], sheet.Cells[stroka2, "Q"]].WrapText = false;
                 sheet.Cells[stroka1, "D"] = @"Составил :";
-                sheet.Cells[stroka1, "I"] = firstName;
+                sheet.Cells[stroka1, "D"].HorizontalAlignment = XlHAlign.xlHAlignRight;
+                sheet.Cells[stroka1, "E"] = "_____________________________" + firstName;
                 sheet.Cells[stroka2, "D"] = @"Проверил :";
-                sheet.Cells[stroka2, "I"] = secondName;
+                sheet.Cells[stroka2, "D"].HorizontalAlignment = XlHAlign.xlHAlignRight;
+                sheet.Cells[stroka2, "E"] = "_____________________________" + secondName;
             } else if (stroka1 == 0 && stroka2 != 0) {
                 range20 = sheet.Range[sheet.Cells[stroka2, "A"], sheet.Cells[stroka2 + 1, "A"]];
                 range20.Value2 = "";
                 range20.UnMerge();
                 sheet.Range[sheet.Cells[stroka2, "B"], sheet.Cells[stroka2, "Q"]].WrapText = false;
                 sheet.Cells[stroka2, "D"] = @"Проверил :";
-                sheet.Cells[stroka2, "I"] = secondName;
+                sheet.Cells[stroka2, "D"].HorizontalAlignment = XlHAlign.xlHAlignRight;
+                sheet.Cells[stroka2, "E"] = "_____________________________" + secondName;
             } else if (stroka1 != 0 && stroka2 == 0) {
                 range20 = sheet.Range[sheet.Cells[stroka1, "A"], sheet.Cells[stroka1 + 1, "A"]];
                 range20.Value2 = "";
                 range20.UnMerge();
                 sheet.Range[sheet.Cells[stroka1, "B"], sheet.Cells[stroka1, "Q"]].WrapText = false;
                 sheet.Cells[stroka1, "D"] = @"Составил :";
-                sheet.Cells[stroka1, "I"] = firstName;
+                sheet.Cells[stroka1, "D"].HorizontalAlignment = XlHAlign.xlHAlignRight;
+                sheet.Cells[stroka1, "E"] = "_____________________________" + firstName;
             }
             // Вставим подписи в ЛС если нужно
             // Подписи в конце страницы =======================================================
@@ -1037,32 +1095,33 @@ namespace EstimatesAssembly {
                 var rowMadeIn = rowEnd + 9;
                 // вставим надписи и ФИО
                 rangeWork = sheet.Cells[rowGip, "C"];
-                rangeWork.Value2 = @"Главный инженер проекта";
+                rangeWork.Value2 = @"Главный инженер проекта :";
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignRight;
                 rangeWork = sheet.Cells[rowBoss, "C"];
-                rangeWork.Value2 = @"Руководитель группы смет";
+                rangeWork.Value2 = @"Руководитель группы смет :";
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignRight;
                 rangeWork = sheet.Cells[rowMadeIn, "C"];
-                rangeWork.Value2 = @"Составил";
+                rangeWork.Value2 = @"Составил :";
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignRight;
-                rangeWork = sheet.Cells[rowGip, "F"];
-                rangeWork.Value2 = MainFormAsm.iniSet.CbGipText;
+
+                rangeWork = sheet.Cells[rowGip, "D"];
+                rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.CbGipText;
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                rangeWork = sheet.Cells[rowBoss, "F"];
-                rangeWork.Value2 = MainFormAsm.iniSet.TbHeadDepartment;
+                rangeWork = sheet.Cells[rowBoss, "D"];
+                rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.TbHeadDepartment;
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                rangeWork = sheet.Cells[rowMadeIn, "F"];
-                rangeWork.Value2 = MainFormAsm.iniSet.CbMadeIn;
+                rangeWork = sheet.Cells[rowMadeIn, "D"];
+                rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.CbMadeInText;
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignLeft;
                 // Вставим картинки
                 if (!MainFormAsm.iniSet.CbGip.Equals("")) {
-                    InsertImage(ref sheet, rowGip, 4, MainFormAsm.iniSet.CbGipText);
+                    InsertImage(ref sheet, rowGip, 5, MainFormAsm.iniSet.CbGipText);
                 }
                 if (!MainFormAsm.iniSet.TbHeadDepartment.Equals("")) {
-                    InsertImage(ref sheet, rowBoss, 4, MainFormAsm.iniSet.TbHeadDepartment);
+                    InsertImage(ref sheet, rowBoss, 5, MainFormAsm.iniSet.TbHeadDepartment);
                 }
                 if (!MainFormAsm.iniSet.CbMadeIn.Equals("")) {
-                    InsertImage(ref sheet, rowMadeIn, 4, MainFormAsm.iniSet.CbMadeInText);
+                    InsertImage(ref sheet, rowMadeIn, 5, MainFormAsm.iniSet.CbMadeInText);
                 }
             }
             sheet.Name = @"ОС" + numberOE;
