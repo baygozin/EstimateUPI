@@ -525,14 +525,14 @@ namespace EstimatesAssembly {
                     && !worksheet.Name.Equals(@"Разрешение")) {
                     worksheet.Activate();
                     HPageBreaks hbreak = worksheet.HPageBreaks;
-                    int pageCount = hbreak.Count - 1;
+                    int pageCount = hbreak.Count;
                     if (pageCount != 0) {
-                        var a = hbreak.Item[pageCount];
+                        var a = hbreak.Item[pageCount - 1];
                         r = hbreak.Item[pageCount].Location;
                         int t = FindLastRow(worksheet);
                         int t1 = r.Row;
                         if ((t - t1) < 12 && (t - t1) > 0) {
-                            var tmpr = worksheet.Range["A" + Convert.ToString(r.Row - 5)];
+                            var tmpr = worksheet.Range["A" + Convert.ToString(r.Row - 12)];
                             hbreak.Item[pageCount].Location = tmpr;
                         }
                     }
@@ -540,9 +540,11 @@ namespace EstimatesAssembly {
             }
         }
 
+        private int FindRightColumn(Worksheet worksheet) {
+            Range range = worksheet.UsedRange;
+            return range.Columns.Count;
+        }
         private int FindLastRow(Worksheet worksheet) {
-            //            Range last = worksheet.Cells.SpecialCells(XlCellType.xlCellTypeLastCell, Type.Missing);
-            //            return last.Row;
             int lastUsedRow = 1;
             Range range = worksheet.UsedRange;
             for (int i = 1; i < range.Columns.Count; i++) {
@@ -590,27 +592,45 @@ namespace EstimatesAssembly {
             //Worksheet title = mainBook.Sheets[1];
             ogl.Name = @"Оглавление";
             ogl.Cells[2, 5] = _nameBook;
-            ogl.PageSetup.Zoom = false;
 
             Worksheet title = mainBook.Sheets.Add(mainBook.Sheets.Item[1], Type.Missing, 1, XlSheetType.xlWorksheet);
             title.Name = @"Титул";
-            title.PageSetup.Zoom = false;
             
             // Включим разрывы страниц
+            
             foreach (Worksheet worksheet in mainBook.Sheets) {
+                if (worksheet.Name.Contains(@"Оглавление") || worksheet.Name.Contains(@"Титул")) {
+                    continue;
+                }
                 worksheet.Select();
-                Ex.ActiveWindow.View = XlWindowView.xlPageBreakPreview;
-            }
-
-            foreach (Worksheet worksheet in mainBook.Sheets) {
-                worksheet.Select();
+                worksheet.PageSetup.Orientation = XlPageOrientation.xlLandscape;
                 worksheet.PageSetup.Zoom = false;
                 worksheet.PageSetup.FitToPagesWide = 1;
                 worksheet.PageSetup.FitToPagesTall = 999;
+                worksheet.PageSetup.LeftMargin = Ex.CentimetersToPoints(2.0);
+                worksheet.PageSetup.RightMargin = Ex.CentimetersToPoints(0.5);
+                worksheet.PageSetup.TopMargin = Ex.CentimetersToPoints(1.0);
+                worksheet.PageSetup.BottomMargin = Ex.CentimetersToPoints(1.0);
+                worksheet.PageSetup.HeaderMargin = 0.0;
+                worksheet.PageSetup.RightFooter = "&P";
+                worksheet.PageSetup.LeftHeader = "";
+                worksheet.PageSetup.CenterHeader = "";
+                worksheet.PageSetup.RightHeader = "";
+                Ex.ActiveWindow.View = XlWindowView.xlPageBreakPreview;
                 if (worksheet.VPageBreaks.Count > 0) {
                     worksheet.VPageBreaks.get_Item(1).DragOff(XlDirection.xlToRight, 1);
                 }
             }
+
+            //foreach (Worksheet worksheet in mainBook.Sheets) {
+            //    worksheet.Select();
+            //    worksheet.PageSetup.Zoom = false;
+            //    worksheet.PageSetup.FitToPagesWide = 1;
+            //    worksheet.PageSetup.FitToPagesTall = 999;
+            //    if (worksheet.VPageBreaks.Count > 0) {
+            //        worksheet.VPageBreaks.get_Item(1).DragOff(XlDirection.xlToRight, 1);
+            //    }
+            //}
             int ns = 3;
             int x = 1;
             Ogl a = new Ogl();
@@ -621,10 +641,6 @@ namespace EstimatesAssembly {
             foreach (Worksheet worksheet in mainBook.Sheets) {
                 worksheet.Select();
                 worksheet.PageSetup.FirstPageNumber = x;
-                worksheet.PageSetup.RightFooter = "&P";
-                worksheet.PageSetup.LeftHeader = " ";
-                worksheet.PageSetup.CenterHeader = " ";
-                worksheet.PageSetup.RightHeader = " ";
                 a = GetColumnsSheet(worksheet);
                 if (!worksheet.Name.Equals("Титул") && !worksheet.Name.Equals("Оглавление")) {
                     ogl.Cells[ns, 4] = ns - delta - 2;
