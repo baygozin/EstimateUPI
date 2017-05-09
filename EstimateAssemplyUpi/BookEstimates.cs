@@ -520,14 +520,13 @@ namespace EstimatesAssembly {
                 return;
             }
             foreach (Worksheet worksheet in mainBook.Sheets) {
-                if (!worksheet.Name.Equals(@"Титул")
-                    && !worksheet.Name.Equals(@"Оглавление")
-                    && !worksheet.Name.Equals(@"Разрешение")) {
+                if (!worksheet.Name.Equals(@"Титул") &&
+                    !worksheet.Name.Equals(@"Оглавление") &&
+                    !worksheet.Name.Equals(@"Разрешение")) {
                     worksheet.Activate();
                     HPageBreaks hbreak = worksheet.HPageBreaks;
                     int pageCount = hbreak.Count;
                     if (pageCount != 0) {
-                        var a = hbreak.Item[pageCount - 1];
                         r = hbreak.Item[pageCount].Location;
                         int t = FindLastRow(worksheet);
                         int t1 = r.Row;
@@ -602,12 +601,12 @@ namespace EstimatesAssembly {
                 if (worksheet.Name.Contains(@"Оглавление") || worksheet.Name.Contains(@"Титул")) {
                     continue;
                 }
-                worksheet.Select();
+                //worksheet.Select();
                 worksheet.PageSetup.Orientation = XlPageOrientation.xlLandscape;
                 worksheet.PageSetup.Zoom = false;
                 worksheet.PageSetup.FitToPagesWide = 1;
                 worksheet.PageSetup.FitToPagesTall = 999;
-                worksheet.PageSetup.LeftMargin = Ex.CentimetersToPoints(2.0);
+                worksheet.PageSetup.LeftMargin = Ex.CentimetersToPoints(0.5);
                 worksheet.PageSetup.RightMargin = Ex.CentimetersToPoints(0.5);
                 worksheet.PageSetup.TopMargin = Ex.CentimetersToPoints(1.0);
                 worksheet.PageSetup.BottomMargin = Ex.CentimetersToPoints(1.0);
@@ -616,6 +615,7 @@ namespace EstimatesAssembly {
                 worksheet.PageSetup.LeftHeader = "";
                 worksheet.PageSetup.CenterHeader = "";
                 worksheet.PageSetup.RightHeader = "";
+                worksheet.Columns[5].ColumnWidth = 8f;
                 Ex.ActiveWindow.View = XlWindowView.xlPageBreakPreview;
                 if (worksheet.VPageBreaks.Count > 0) {
                     worksheet.VPageBreaks.get_Item(1).DragOff(XlDirection.xlToRight, 1);
@@ -642,7 +642,8 @@ namespace EstimatesAssembly {
                 worksheet.Select();
                 worksheet.PageSetup.FirstPageNumber = x;
                 a = GetColumnsSheet(worksheet);
-                if (!worksheet.Name.Equals("Титул") && !worksheet.Name.Equals("Оглавление")) {
+                if (!worksheet.Name.Equals("Титул") && 
+                    !worksheet.Name.Equals("Оглавление")) {
                     ogl.Cells[ns, 4] = ns - delta - 2;
                     ogl.Cells[ns, 5] = a.col1;
                     ogl.Cells[ns, 8] = a.col2;
@@ -658,7 +659,6 @@ namespace EstimatesAssembly {
                     delta = 10;
                 }
                 x = worksheet.PageSetup.FirstPageNumber + worksheet.PageSetup.Pages.Count;
-                worksheet.PageSetup.Zoom = 100;
             }
             delta = 0;
             title.Delete();
