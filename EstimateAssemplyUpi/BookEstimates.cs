@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using DocumentFormat.OpenXml.Drawing;
@@ -12,6 +13,7 @@ using Microsoft.Office.Interop.Excel;
 using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using Application = Microsoft.Office.Interop.Excel.Application;
+using Page = DocumentFormat.OpenXml.Spreadsheet.Page;
 using Path = System.IO.Path;
 using Shape = Microsoft.Office.Interop.Excel.Shape;
 using Workbook = Microsoft.Office.Interop.Excel.Workbook;
@@ -512,10 +514,10 @@ namespace EstimatesAssembly {
             }
         }
 
-        // Дополнительная обработка таблиц
+        // Дополнительная обработка таблиц. Смещение последнего разрыва
         public void AdaptionSheets() {
+            Range range;
             Workbook mainBook = Ex.ActiveWorkbook;
-            Range r;
             if (mainBook == null) {
                 return;
             }
@@ -524,17 +526,24 @@ namespace EstimatesAssembly {
                     !worksheet.Name.Equals(@"Оглавление") &&
                     !worksheet.Name.Equals(@"Разрешение")) {
                     worksheet.Activate();
-                    HPageBreaks hbreak = worksheet.HPageBreaks;
-                    int pageCount = hbreak.Count;
+//                    Range rr = worksheet.Range["A1", "A1"];
+//                    rr.Activate();
+                    //Ex.ActiveWindow.View = XlWindowView.xlPageBreakPreview;
+                    Ex.ActiveWindow.View = XlWindowView.xlPageLayoutView;
+                    HPageBreaks hbreaks = worksheet.HPageBreaks;
+                    int pageCount = hbreaks.Count;
                     if (pageCount != 0) {
-                        r = hbreak.Item[pageCount].Location;
+                        range = hbreaks.Item[pageCount].Location;
                         int t = FindLastRow(worksheet);
-                        int t1 = r.Row;
-                        if ((t - t1) < 12 && (t - t1) > 0) {
-                            var tmpr = worksheet.Range["A" + Convert.ToString(r.Row - 12)];
-                            hbreak.Item[pageCount].Location = tmpr;
+                        int t1 = range.Row;
+                        int diff = t - t1;
+                        Ex.ActiveWindow.View = XlWindowView.xlPageBreakPreview;
+                        if (diff < 12 && diff > 0) {
+                            HPageBreak brr = hbreaks.Item[pageCount];
+                            brr.Location = worksheet.Range["A" + Convert.ToString(t1 - 12)];
                         }
                     }
+                    Release(hbreaks);
                 }
             }
         }
@@ -544,25 +553,18 @@ namespace EstimatesAssembly {
             return range.Columns.Count;
         }
         private int FindLastRow(Worksheet worksheet) {
-            int lastUsedRow = 1;
-            Range range = worksheet.UsedRange;
-            for (int i = 1; i < range.Columns.Count; i++) {
-                int lastRow = range.Rows.Count;
-                for (int j = range.Rows.Count; j > 0; j--) {
-                    if (lastUsedRow < lastRow) {
-                        lastRow = j;
-                        if (!String.IsNullOrWhiteSpace(Convert.ToString((worksheet.Cells[j, i] as Range).Value))) {
-                            if (lastUsedRow < lastRow)
-                                lastUsedRow = lastRow;
-                            if (lastUsedRow == range.Rows.Count)
-                                return lastUsedRow - 1;
-                            break;
-                        }
-                    } else
-                        break;
+            int lastCol = worksheet.UsedRange.Columns.Count;
+            int fullRow = worksheet.Rows.Count;
+            int lastRow = worksheet.Cells[fullRow, 1].End(XlDirection.xlUp).Row;
+            
+            for (int i = 0; i < lastRow; i++) {
+                Range range = worksheet.Cells[i + 1, 1];
+                var mergeCells = range.MergeCells;
+                if (mergeCells && (range.MergeArea.Columns.Count == lastCol)) {
+                        lastRow++;
                 }
             }
-            return lastUsedRow;
+            return lastRow;
         }
 
         public void NumberingPage() {
@@ -606,31 +608,21 @@ namespace EstimatesAssembly {
                 worksheet.PageSetup.Zoom = false;
                 worksheet.PageSetup.FitToPagesWide = 1;
                 worksheet.PageSetup.FitToPagesTall = 999;
-                worksheet.PageSetup.LeftMargin = Ex.CentimetersToPoints(0.5);
-                worksheet.PageSetup.RightMargin = Ex.CentimetersToPoints(0.5);
-                worksheet.PageSetup.TopMargin = Ex.CentimetersToPoints(1.0);
-                worksheet.PageSetup.BottomMargin = Ex.CentimetersToPoints(1.0);
+                worksheet.PageSetup.TopMargin = Ex.CentimetersToPoints(0.5);
+                worksheet.PageSetup.BottomMargin = Ex.CentimetersToPoints(1.4);
                 worksheet.PageSetup.HeaderMargin = 0.0;
                 worksheet.PageSetup.RightFooter = "&P";
                 worksheet.PageSetup.LeftHeader = "";
                 worksheet.PageSetup.CenterHeader = "";
                 worksheet.PageSetup.RightHeader = "";
                 worksheet.Columns[5].ColumnWidth = 8f;
+                worksheet.PageSetup.PrintTitleRows = "";
                 Ex.ActiveWindow.View = XlWindowView.xlPageBreakPreview;
-                if (worksheet.VPageBreaks.Count > 0) {
-                    worksheet.VPageBreaks.get_Item(1).DragOff(XlDirection.xlToRight, 1);
-                }
+//                if (worksheet.VPageBreaks.Count > 0) {
+//                    worksheet.VPageBreaks.get_Item(1).DragOff(XlDirection.xlToRight, 1);
+//                }
             }
 
-            //foreach (Worksheet worksheet in mainBook.Sheets) {
-            //    worksheet.Select();
-            //    worksheet.PageSetup.Zoom = false;
-            //    worksheet.PageSetup.FitToPagesWide = 1;
-            //    worksheet.PageSetup.FitToPagesTall = 999;
-            //    if (worksheet.VPageBreaks.Count > 0) {
-            //        worksheet.VPageBreaks.get_Item(1).DragOff(XlDirection.xlToRight, 1);
-            //    }
-            //}
             int ns = 3;
             int x = 1;
             Ogl a = new Ogl();
@@ -859,7 +851,7 @@ namespace EstimatesAssembly {
             if (range != null) {
                 string num = worksheet.Name.Substring(2);
                 o.col1 = @"ОСР №" + num;
-                o.col2 = @"объектный сметный расчет";
+                o.col2 = worksheet.Range["A8"].Text; ;
                 return o;
             }
             range = worksheet.Cells.Find(@"ВЕДОМОСТЬ РЕСУРСОВ");
@@ -888,7 +880,9 @@ namespace EstimatesAssembly {
             if (range != null) {
                 string num = worksheet.Name.Substring(2);
                 o.col1 = @"ЛРС №" + num;
-                o.col2 = @"Локальный ресурсный сметный расчет";
+                string text = worksheet.Range["A6"].Text;
+                text = ConvertRSName(text.Substring(3));
+                o.col2 = text;
                 return o;
             }
             return o;
@@ -911,6 +905,18 @@ namespace EstimatesAssembly {
             }
         }
 
+        public static string ConvertRSName(string name) {
+            Regex pattern = new Regex(@"(?:\D*)(?<ss>((\d{2,4})[-|\.])*(\d{1,4}))");
+            MatchCollection mc = pattern.Matches(name);
+            if (mc.Count > 0) {
+                GroupCollection groups = mc[0].Groups;
+                name = name.Remove(0, groups["ss"].Value.Length);
+                return name;
+            } else {
+                return name;
+            }
+        }
+
         public static string RenameName(string name) {
             Regex pattern = new Regex(@"(?:\D*)(?<ss>((\d{2,4})[-|\.])*(\d{1,4}))");
             MatchCollection mc = pattern.Matches(name);
@@ -921,6 +927,7 @@ namespace EstimatesAssembly {
                 return name;
             }
         }
+
         public static string RemoveBeginPos(string name) {
             Regex pattern = new Regex(@"(?:\D*)(?<ss>(\(?(\d{2,4})[-|\.])*(\d{1,4})(\)?))");
             MatchCollection mc = pattern.Matches(name);
@@ -946,7 +953,7 @@ namespace EstimatesAssembly {
             numberEstimate = numberEstimate.Substring(numberEstimate.LastIndexOf("№") + 2);
             //    lLastCol = ActiveSheet.UsedRange.Column + ActiveSheet.UsedRange.Columns.Count - 1
             //int col = sheet.UsedRange.Column + sheet.UsedRange.Columns.Count - 1;
-            Range tmprange = sheet.Range["A6:M6"];
+            Range tmprange = sheet.Range["A6:Q6"];
             tmprange.Merge();
             tmprange.Font.Bold = true;
             tmprange.Font.Underline = true;
@@ -959,8 +966,12 @@ namespace EstimatesAssembly {
             tmprange.Font.Italic = true;
             tmprange.Merge();
             tmprange.Value2 = "наименование стройки";
-            string tmp = sheet.Range["D12"].Text;
 
+            tmprange = sheet.Range["G9"];
+            tmprange.Font.Name = "Times New Roman";
+            tmprange.Font.Bold = true;
+
+            string tmp = sheet.Range["D12"].Text;
             tmprange = sheet.Range["A12:Q12"];
             tmprange.Clear();
             tmprange.Merge();
@@ -1053,6 +1064,7 @@ namespace EstimatesAssembly {
 
         // Объектные сметы. Обработка
         private string WorkWithExcelOs(Worksheet sheet) {
+            string tmp;
             sheet.UsedRange.Font.Name = "Times New Roman";
             // Затрем все лишнее сверху ===============================================
             ((Range)sheet.Range["J1"]).Clear();
@@ -1060,6 +1072,23 @@ namespace EstimatesAssembly {
             sheet.Range["A2:J2"].Font.Bold = true;
             sheet.Range["A2:J2"].Font.Underline = true;
             sheet.Range["A2:J2"].Value2 = MainFormAsm.iniSet.TbNameBuilding;
+
+            tmp = sheet.Range["E3"].Text;
+            sheet.Range["A3:J3"].Merge();
+            sheet.Range["A3"].Value2 = tmp;
+            sheet.Range["A3"].HorizontalAlignment = XlHAlign.xlHAlignCenter;
+            sheet.Range["A3"].Font.Italic = true;
+            tmp = sheet.Range["E6"].Text;
+            sheet.Range["A6:J6"].Merge();
+            sheet.Range["A6"].Value2 = tmp;
+            sheet.Range["A6"].HorizontalAlignment = XlHAlign.xlHAlignCenter;
+            sheet.Range["A6"].Font.Italic = true;
+            tmp = sheet.Range["E9"].Text;
+            sheet.Range["A9:J9"].Merge();
+            sheet.Range["A9"].Value2 = tmp;
+            sheet.Range["A9"].HorizontalAlignment = XlHAlign.xlHAlignCenter;
+            sheet.Range["A9"].Font.Italic = true;
+
             string numberOE = ((Range)sheet.Range["G5"]).Text;
             sheet.Range["G5"].Clear();
             sheet.Range["E5"].Value2 += numberOE;
@@ -1067,13 +1096,19 @@ namespace EstimatesAssembly {
             sheet.Range["A5:J5"].Font.Underline = true;
             sheet.Range["A5:J5"].Font.Bold = true;
 
-            string tmp = sheet.Range["D8"].Text;
+            tmp = sheet.Range["D8"].Text;
+            Regex pattern = new Regex(@"(?:\D*)(?<ss>((\d{2,4})[-|\.])*(\d{1,4}))");
+            MatchCollection mc = pattern.Matches(tmp);
+            if (mc.Count == 1) {
+                tmp = tmp.Substring(mc[0].Value.Length).Trim();
+            }
             sheet.Range["A8:J8"].Clear();
             sheet.Range["A8:J8"].Merge();
-            sheet.Range["A8:J8"].Value2 = tmp;
-            sheet.Range["A8:J8"].HorizontalAlignment = XlHAlign.xlHAlignCenter;
-            sheet.Range["A8:J8"].Font.Name = "Times New Roman";
-            sheet.Range["A8:J8"].Font.Underline = true;
+            sheet.Range["A8"].Value2 = tmp;
+            sheet.Range["A8"].HorizontalAlignment = XlHAlign.xlHAlignCenter;
+            sheet.Range["A8"].Font.Name = "Times New Roman";
+            sheet.Range["A8"].Font.Bold = true;
+            sheet.Range["A8"].Font.Underline = true;
 
             Range rangeWork;
             string nameWorks = numberOE;
@@ -1253,29 +1288,15 @@ namespace EstimatesAssembly {
             test.Delete();
         }
 
-    //    private float FloatTopPixelsCalculation(Range range) {
-    //        Range r1 = range.Worksheet.Cells[range.Row + 1, range.Column];
-    //        float floatTop1 = 0;
-    //        for (var rNumber = 2; rNumber < r1.Row; rNumber++) {
-
-    //            var cellHeight = Convert.ToSingle(r1.Worksheet.Cells[rNumber, r1.Column].RowHeight);
-    //            floatTop1 = floatTop1 + cellHeight;
-    //        }
-    //        float floatTop = 0;
-    //        for (var rNumber = 2; rNumber < range.Row; rNumber++) {
-    //            var cellHeight = Convert.ToSingle(range.Worksheet.Cells[rNumber, range.Column].RowHeight);
-    //            floatTop = floatTop + cellHeight;
-    //        }
-    //        return (floatTop + floatTop1) / 2;
-    //    }
-
-    //    private float FloatLeftPixelsCalculation(Range range) {
-    //        float floatLeft = 0;
-    //        for (var columnNumber = 1; columnNumber < range.Columns.Column; columnNumber++) {
-    //            var cellWidth = Convert.ToSingle(range.Worksheet.Cells[range.Row, columnNumber].Width);
-    //            floatLeft = floatLeft + cellWidth + 1;
-    //        }
-    //        return floatLeft;
-    //    }
+        private void Release(object sender) {
+            try {
+                if (sender != null) {
+                    Marshal.ReleaseComObject(sender);
+                    sender = null;
+                }
+            } catch (Exception) {
+                sender = null;
+            }
+        }
     }
 }
