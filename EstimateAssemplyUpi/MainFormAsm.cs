@@ -27,7 +27,7 @@ namespace EstimatesAssembly {
             InitializeComponent();
             _book = new BookEstimates();
             _configfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\estimate.xml";
-            
+            _book.PgBar = pgBar;
             this.lstSheet.ListViewItemSorter = _lvwColumnSorter;
         }
 

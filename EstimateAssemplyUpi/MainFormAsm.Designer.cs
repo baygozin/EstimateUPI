@@ -59,6 +59,8 @@
             this.tbDocumentNumber = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.tbNameObject = new System.Windows.Forms.TextBox();
             this.btnToolsFilesPath = new System.Windows.Forms.Button();
             this.txtToolsFilesPath = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -105,7 +107,6 @@
             this.tbNameBuilding = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.tabPageEstimate = new System.Windows.Forms.TabPage();
-            this.button3 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.cbShowExcel = new System.Windows.Forms.CheckBox();
             this.lblNameBook = new System.Windows.Forms.Label();
@@ -119,8 +120,7 @@
             this.lstSheet = new System.Windows.Forms.ListView();
             this.columnSheetName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabControlMain = new System.Windows.Forms.TabControl();
-            this.tbNameObject = new System.Windows.Forms.TextBox();
-            this.label20 = new System.Windows.Forms.Label();
+            this.pgBar = new System.Windows.Forms.ProgressBar();
             this.ctxMenuFileList.SuspendLayout();
             this.tabPageSetup.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -501,6 +501,24 @@
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Общие";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(8, 71);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(128, 13);
+            this.label20.TabIndex = 80;
+            this.label20.Text = "Наименование объекта";
+            // 
+            // tbNameObject
+            // 
+            this.tbNameObject.Location = new System.Drawing.Point(8, 87);
+            this.tbNameObject.Multiline = true;
+            this.tbNameObject.Name = "tbNameObject";
+            this.tbNameObject.Size = new System.Drawing.Size(463, 33);
+            this.tbNameObject.TabIndex = 79;
+            this.tbNameObject.Text = "Наименование объекта";
             // 
             // btnToolsFilesPath
             // 
@@ -920,7 +938,7 @@
             // 
             // tabPageEstimate
             // 
-            this.tabPageEstimate.Controls.Add(this.button3);
+            this.tabPageEstimate.Controls.Add(this.pgBar);
             this.tabPageEstimate.Controls.Add(this.button1);
             this.tabPageEstimate.Controls.Add(this.cbShowExcel);
             this.tabPageEstimate.Controls.Add(this.lblNameBook);
@@ -935,21 +953,11 @@
             this.tabPageEstimate.Location = new System.Drawing.Point(4, 22);
             this.tabPageEstimate.Name = "tabPageEstimate";
             this.tabPageEstimate.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageEstimate.Size = new System.Drawing.Size(956, 526);
+            this.tabPageEstimate.Size = new System.Drawing.Size(956, 555);
             this.tabPageEstimate.TabIndex = 1;
             this.tabPageEstimate.Text = "Сборка смет";
             this.tabPageEstimate.UseVisualStyleBackColor = true;
             this.tabPageEstimate.Paint += new System.Windows.Forms.PaintEventHandler(this.tabPageEstimate_Paint);
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(795, 54);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(134, 30);
-            this.button3.TabIndex = 33;
-            this.button3.Text = "Сдвиг разрывов";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button1
             // 
@@ -965,7 +973,7 @@
             // cbShowExcel
             // 
             this.cbShowExcel.AutoSize = true;
-            this.cbShowExcel.Location = new System.Drawing.Point(798, 19);
+            this.cbShowExcel.Location = new System.Drawing.Point(795, 529);
             this.cbShowExcel.Name = "cbShowExcel";
             this.cbShowExcel.Size = new System.Drawing.Size(97, 17);
             this.cbShowExcel.TabIndex = 13;
@@ -1092,23 +1100,15 @@
             this.tabControlMain.Size = new System.Drawing.Size(964, 581);
             this.tabControlMain.TabIndex = 0;
             // 
-            // tbNameObject
+            // pgBar
             // 
-            this.tbNameObject.Location = new System.Drawing.Point(8, 87);
-            this.tbNameObject.Multiline = true;
-            this.tbNameObject.Name = "tbNameObject";
-            this.tbNameObject.Size = new System.Drawing.Size(463, 33);
-            this.tbNameObject.TabIndex = 79;
-            this.tbNameObject.Text = "Наименование объекта";
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(8, 71);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(128, 13);
-            this.label20.TabIndex = 80;
-            this.label20.Text = "Наименование объекта";
+            this.pgBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pgBar.Location = new System.Drawing.Point(6, 523);
+            this.pgBar.Name = "pgBar";
+            this.pgBar.Size = new System.Drawing.Size(714, 23);
+            this.pgBar.Step = 1;
+            this.pgBar.TabIndex = 34;
             // 
             // MainFormAsm
             // 
@@ -1224,7 +1224,6 @@
         private System.Windows.Forms.TextBox tbNameBuilding;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TabPage tabPageEstimate;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.CheckBox cbShowExcel;
         private System.Windows.Forms.Label lblNameBook;
@@ -1242,6 +1241,7 @@
         private System.Windows.Forms.CheckBox cbInsertSignLR;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.TextBox tbNameObject;
+        public System.Windows.Forms.ProgressBar pgBar;
     }
 }
 

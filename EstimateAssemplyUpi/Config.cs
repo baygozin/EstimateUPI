@@ -56,6 +56,7 @@ namespace EstimatesAssembly {
         public string TbCustomer;
         public string TbCertificate;
         public string TbYearTitle;
+        // Переменные для титулов
     }
 
 }
