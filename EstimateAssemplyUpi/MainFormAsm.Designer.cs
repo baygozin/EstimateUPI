@@ -107,6 +107,7 @@
             this.tbNameBuilding = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.tabPageEstimate = new System.Windows.Forms.TabPage();
+            this.pgBar = new System.Windows.Forms.ProgressBar();
             this.button1 = new System.Windows.Forms.Button();
             this.cbShowExcel = new System.Windows.Forms.CheckBox();
             this.lblNameBook = new System.Windows.Forms.Label();
@@ -120,7 +121,16 @@
             this.lstSheet = new System.Windows.Forms.ListView();
             this.columnSheetName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabControlMain = new System.Windows.Forms.TabControl();
-            this.pgBar = new System.Windows.Forms.ProgressBar();
+            this.tabPageVolume = new System.Windows.Forms.TabPage();
+            this.btnBuild = new System.Windows.Forms.Button();
+            this.btnDeleteFile = new System.Windows.Forms.Button();
+            this.btnAddFile = new System.Windows.Forms.Button();
+            this.listViewWithReordering = new EstimatesAssembly.ListViewWithReordering();
+            this.btnSetWorkFolder = new System.Windows.Forms.Button();
+            this.label24 = new System.Windows.Forms.Label();
+            this.tbWorkFolder = new System.Windows.Forms.TextBox();
+            this.btnRefresh = new System.Windows.Forms.Button();
+            this.btnRename = new System.Windows.Forms.Button();
             this.ctxMenuFileList.SuspendLayout();
             this.tabPageSetup.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -133,6 +143,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numVolumeNumber)).BeginInit();
             this.tabPageEstimate.SuspendLayout();
             this.tabControlMain.SuspendLayout();
+            this.tabPageVolume.SuspendLayout();
             this.SuspendLayout();
             // 
             // ctxMenuFileList
@@ -213,7 +224,7 @@
             this.chbSave.AutoSize = true;
             this.chbSave.Location = new System.Drawing.Point(210, 19);
             this.chbSave.Name = "chbSave";
-            this.chbSave.Size = new System.Drawing.Size(79, 17);
+            this.chbSave.Size = new System.Drawing.Size(81, 17);
             this.chbSave.TabIndex = 2;
             this.chbSave.Text = "Сохранять";
             this.chbSave.UseVisualStyleBackColor = true;
@@ -223,7 +234,7 @@
             this.chbNumeric.AutoSize = true;
             this.chbNumeric.Location = new System.Drawing.Point(107, 19);
             this.chbNumeric.Name = "chbNumeric";
-            this.chbNumeric.Size = new System.Drawing.Size(88, 17);
+            this.chbNumeric.Size = new System.Drawing.Size(87, 17);
             this.chbNumeric.TabIndex = 1;
             this.chbNumeric.Text = "Нумеровать";
             this.chbNumeric.UseVisualStyleBackColor = true;
@@ -233,7 +244,7 @@
             this.chbSort.AutoSize = true;
             this.chbSort.Location = new System.Drawing.Point(8, 19);
             this.chbSort.Name = "chbSort";
-            this.chbSort.Size = new System.Drawing.Size(91, 17);
+            this.chbSort.Size = new System.Drawing.Size(93, 17);
             this.chbSort.TabIndex = 0;
             this.chbSort.Text = "Сортировать";
             this.chbSort.UseVisualStyleBackColor = true;
@@ -274,7 +285,7 @@
             this.cbInsertSignSS.AutoSize = true;
             this.cbInsertSignSS.Location = new System.Drawing.Point(6, 104);
             this.cbInsertSignSS.Name = "cbInsertSignSS";
-            this.cbInsertSignSS.Size = new System.Drawing.Size(146, 17);
+            this.cbInsertSignSS.Size = new System.Drawing.Size(148, 17);
             this.cbInsertSignSS.TabIndex = 38;
             this.cbInsertSignSS.Text = "Включать подписи в СС";
             this.cbInsertSignSS.UseVisualStyleBackColor = true;
@@ -294,7 +305,7 @@
             this.cbInsertSignLE.AutoSize = true;
             this.cbInsertSignLE.Location = new System.Drawing.Point(175, 104);
             this.cbInsertSignLE.Name = "cbInsertSignLE";
-            this.cbInsertSignLE.Size = new System.Drawing.Size(147, 17);
+            this.cbInsertSignLE.Size = new System.Drawing.Size(148, 17);
             this.cbInsertSignLE.TabIndex = 36;
             this.cbInsertSignLE.Text = "Включать подписи в ЛС";
             this.cbInsertSignLE.UseVisualStyleBackColor = true;
@@ -304,7 +315,7 @@
             this.label23.AutoSize = true;
             this.label23.Location = new System.Drawing.Point(170, 16);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(99, 13);
+            this.label23.Size = new System.Drawing.Size(98, 13);
             this.label23.TabIndex = 35;
             this.label23.Text = "Индекс цен ОС на";
             // 
@@ -312,7 +323,7 @@
             // 
             this.cbPriceLevelO.Location = new System.Drawing.Point(173, 32);
             this.cbPriceLevelO.Name = "cbPriceLevelO";
-            this.cbPriceLevelO.Size = new System.Drawing.Size(160, 20);
+            this.cbPriceLevelO.Size = new System.Drawing.Size(160, 21);
             this.cbPriceLevelO.TabIndex = 34;
             // 
             // cbRebuild
@@ -330,7 +341,7 @@
             this.cbInsertSignOE.AutoSize = true;
             this.cbInsertSignOE.Location = new System.Drawing.Point(6, 127);
             this.cbInsertSignOE.Name = "cbInsertSignOE";
-            this.cbInsertSignOE.Size = new System.Drawing.Size(147, 17);
+            this.cbInsertSignOE.Size = new System.Drawing.Size(149, 17);
             this.cbInsertSignOE.TabIndex = 30;
             this.cbInsertSignOE.Text = "Включать подписи в ОС";
             this.cbInsertSignOE.UseVisualStyleBackColor = true;
@@ -341,7 +352,7 @@
             this.cbPriceLevelL.Location = new System.Drawing.Point(6, 32);
             this.cbPriceLevelL.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
             this.cbPriceLevelL.Name = "cbPriceLevelL";
-            this.cbPriceLevelL.Size = new System.Drawing.Size(160, 20);
+            this.cbPriceLevelL.Size = new System.Drawing.Size(160, 21);
             this.cbPriceLevelL.TabIndex = 28;
             // 
             // label5
@@ -349,7 +360,7 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(3, 16);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(99, 13);
+            this.label5.Size = new System.Drawing.Size(97, 13);
             this.label5.TabIndex = 27;
             this.label5.Text = "Индекс цен ЛС на";
             // 
@@ -358,7 +369,7 @@
             this.cbQuarter.AutoSize = true;
             this.cbQuarter.Location = new System.Drawing.Point(6, 58);
             this.cbQuarter.Name = "cbQuarter";
-            this.cbQuarter.Size = new System.Drawing.Size(153, 17);
+            this.cbQuarter.Size = new System.Drawing.Size(156, 17);
             this.cbQuarter.TabIndex = 29;
             this.cbQuarter.Text = "Отображать как квартал";
             this.cbQuarter.UseVisualStyleBackColor = true;
@@ -393,7 +404,7 @@
             // 
             this.numModification.Location = new System.Drawing.Point(183, 30);
             this.numModification.Name = "numModification";
-            this.numModification.Size = new System.Drawing.Size(68, 20);
+            this.numModification.Size = new System.Drawing.Size(68, 21);
             this.numModification.TabIndex = 25;
             // 
             // label18
@@ -401,7 +412,7 @@
             this.label18.AutoSize = true;
             this.label18.Location = new System.Drawing.Point(180, 13);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(65, 13);
+            this.label18.Size = new System.Drawing.Size(61, 13);
             this.label18.TabIndex = 61;
             this.label18.Text = "Изменение";
             // 
@@ -409,14 +420,14 @@
             // 
             this.dateAjustment.Location = new System.Drawing.Point(6, 30);
             this.dateAjustment.Name = "dateAjustment";
-            this.dateAjustment.Size = new System.Drawing.Size(160, 20);
+            this.dateAjustment.Size = new System.Drawing.Size(160, 21);
             this.dateAjustment.TabIndex = 24;
             // 
             // tbPageNumber
             // 
             this.tbPageNumber.Location = new System.Drawing.Point(234, 71);
             this.tbPageNumber.Name = "tbPageNumber";
-            this.tbPageNumber.Size = new System.Drawing.Size(220, 20);
+            this.tbPageNumber.Size = new System.Drawing.Size(220, 21);
             this.tbPageNumber.TabIndex = 27;
             this.tbPageNumber.Text = "0";
             // 
@@ -425,7 +436,7 @@
             this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(2, 55);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(98, 13);
+            this.label13.Size = new System.Drawing.Size(96, 13);
             this.label13.TabIndex = 51;
             this.label13.Text = "Номер документа";
             // 
@@ -433,7 +444,7 @@
             // 
             this.tbDocumentNumber.Location = new System.Drawing.Point(5, 71);
             this.tbDocumentNumber.Name = "tbDocumentNumber";
-            this.tbDocumentNumber.Size = new System.Drawing.Size(220, 20);
+            this.tbDocumentNumber.Size = new System.Drawing.Size(220, 21);
             this.tbDocumentNumber.TabIndex = 26;
             this.tbDocumentNumber.Text = "0";
             // 
@@ -442,7 +453,7 @@
             this.label14.AutoSize = true;
             this.label14.Location = new System.Drawing.Point(231, 55);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(32, 13);
+            this.label14.Size = new System.Drawing.Size(31, 13);
             this.label14.TabIndex = 53;
             this.label14.Text = "Лист";
             // 
@@ -507,7 +518,7 @@
             this.label20.AutoSize = true;
             this.label20.Location = new System.Drawing.Point(8, 71);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(128, 13);
+            this.label20.Size = new System.Drawing.Size(126, 13);
             this.label20.TabIndex = 80;
             this.label20.Text = "Наименование объекта";
             // 
@@ -533,7 +544,7 @@
             // 
             this.txtToolsFilesPath.Location = new System.Drawing.Point(485, 168);
             this.txtToolsFilesPath.Name = "txtToolsFilesPath";
-            this.txtToolsFilesPath.Size = new System.Drawing.Size(407, 20);
+            this.txtToolsFilesPath.Size = new System.Drawing.Size(407, 21);
             this.txtToolsFilesPath.TabIndex = 77;
             this.txtToolsFilesPath.Text = "C:\\tmp";
             // 
@@ -542,7 +553,7 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(483, 152);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(103, 13);
+            this.label3.Size = new System.Drawing.Size(100, 13);
             this.label3.TabIndex = 76;
             this.label3.Text = "Временные файлы";
             // 
@@ -550,7 +561,7 @@
             // 
             this.tbYearTitul.Location = new System.Drawing.Point(485, 126);
             this.tbYearTitul.Name = "tbYearTitul";
-            this.tbYearTitul.Size = new System.Drawing.Size(100, 20);
+            this.tbYearTitul.Size = new System.Drawing.Size(100, 21);
             this.tbYearTitul.TabIndex = 75;
             // 
             // label30
@@ -558,7 +569,7 @@
             this.label30.AutoSize = true;
             this.label30.Location = new System.Drawing.Point(482, 110);
             this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(103, 13);
+            this.label30.Size = new System.Drawing.Size(104, 13);
             this.label30.TabIndex = 74;
             this.label30.Text = "Поле \"Год\" в титул";
             // 
@@ -566,7 +577,7 @@
             // 
             this.txtEsimatePath.Location = new System.Drawing.Point(486, 211);
             this.txtEsimatePath.Name = "txtEsimatePath";
-            this.txtEsimatePath.Size = new System.Drawing.Size(407, 20);
+            this.txtEsimatePath.Size = new System.Drawing.Size(407, 21);
             this.txtEsimatePath.TabIndex = 18;
             this.txtEsimatePath.Text = "C:\\tmp";
             // 
@@ -575,7 +586,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(482, 195);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(155, 13);
+            this.label1.Size = new System.Drawing.Size(152, 13);
             this.label1.TabIndex = 24;
             this.label1.Text = "Папка с результатом сборки";
             // 
@@ -583,7 +594,7 @@
             // 
             this.tbCertificate.Location = new System.Drawing.Point(485, 87);
             this.tbCertificate.Name = "tbCertificate";
-            this.tbCertificate.Size = new System.Drawing.Size(449, 20);
+            this.tbCertificate.Size = new System.Drawing.Size(449, 21);
             this.tbCertificate.TabIndex = 73;
             this.tbCertificate.Text = "Свидетельство";
             // 
@@ -592,7 +603,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(483, 234);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(184, 13);
+            this.label2.Size = new System.Drawing.Size(179, 13);
             this.label2.TabIndex = 16;
             this.label2.Text = "Папка с изображениями подписей";
             // 
@@ -601,7 +612,7 @@
             this.label29.AutoSize = true;
             this.label29.Location = new System.Drawing.Point(483, 71);
             this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(84, 13);
+            this.label29.Size = new System.Drawing.Size(86, 13);
             this.label29.TabIndex = 72;
             this.label29.Text = "Свидетельство";
             // 
@@ -628,7 +639,7 @@
             // 
             this.txtImagePath.Location = new System.Drawing.Point(485, 250);
             this.txtImagePath.Name = "txtImagePath";
-            this.txtImagePath.Size = new System.Drawing.Size(407, 20);
+            this.txtImagePath.Size = new System.Drawing.Size(407, 21);
             this.txtImagePath.TabIndex = 20;
             this.txtImagePath.Text = "C:\\NewEstimates\\Images";
             this.txtImagePath.TextChanged += new System.EventHandler(this.txtImagePath_TextChanged);
@@ -638,7 +649,7 @@
             this.label28.AutoSize = true;
             this.label28.Location = new System.Drawing.Point(483, 16);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(55, 13);
+            this.label28.Size = new System.Drawing.Size(54, 13);
             this.label28.TabIndex = 70;
             this.label28.Text = "Заказчик";
             // 
@@ -676,7 +687,7 @@
             // 
             this.tbCodeObject.Location = new System.Drawing.Point(8, 139);
             this.tbCodeObject.Name = "tbCodeObject";
-            this.tbCodeObject.Size = new System.Drawing.Size(463, 20);
+            this.tbCodeObject.Size = new System.Drawing.Size(463, 21);
             this.tbCodeObject.TabIndex = 2;
             this.tbCodeObject.Text = "Шифр объекта";
             // 
@@ -685,7 +696,7 @@
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(8, 123);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(81, 13);
+            this.label9.Size = new System.Drawing.Size(83, 13);
             this.label9.TabIndex = 69;
             this.label9.Text = "Шифр объекта";
             // 
@@ -693,7 +704,7 @@
             // 
             this.tbInventoryNumber.Location = new System.Drawing.Point(8, 233);
             this.tbInventoryNumber.Name = "tbInventoryNumber";
-            this.tbInventoryNumber.Size = new System.Drawing.Size(147, 20);
+            this.tbInventoryNumber.Size = new System.Drawing.Size(147, 21);
             this.tbInventoryNumber.TabIndex = 7;
             this.tbInventoryNumber.Text = "00123456";
             // 
@@ -702,7 +713,7 @@
             this.label21.AutoSize = true;
             this.label21.Location = new System.Drawing.Point(5, 217);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(90, 13);
+            this.label21.Size = new System.Drawing.Size(92, 13);
             this.label21.TabIndex = 67;
             this.label21.Text = "Инвентарный №";
             // 
@@ -710,7 +721,7 @@
             // 
             this.dateToStamp.Location = new System.Drawing.Point(603, 126);
             this.dateToStamp.Name = "dateToStamp";
-            this.dateToStamp.Size = new System.Drawing.Size(160, 20);
+            this.dateToStamp.Size = new System.Drawing.Size(160, 21);
             this.dateToStamp.TabIndex = 17;
             // 
             // label19
@@ -718,7 +729,7 @@
             this.label19.AutoSize = true;
             this.label19.Location = new System.Drawing.Point(600, 111);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(78, 13);
+            this.label19.Size = new System.Drawing.Size(77, 13);
             this.label19.TabIndex = 63;
             this.label19.Text = "Дата в штамп";
             // 
@@ -727,7 +738,7 @@
             this.label17.AutoSize = true;
             this.label17.Location = new System.Drawing.Point(107, 176);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(38, 13);
+            this.label17.Size = new System.Drawing.Size(37, 13);
             this.label17.TabIndex = 60;
             this.label17.Text = "Часть";
             // 
@@ -745,7 +756,7 @@
             this.label15.AutoSize = true;
             this.label15.Location = new System.Drawing.Point(8, 175);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(28, 13);
+            this.label15.Size = new System.Drawing.Size(25, 13);
             this.label15.TabIndex = 58;
             this.label15.Text = "Том";
             // 
@@ -753,14 +764,14 @@
             // 
             this.numPartNumber.Location = new System.Drawing.Point(110, 192);
             this.numPartNumber.Name = "numPartNumber";
-            this.numPartNumber.Size = new System.Drawing.Size(45, 20);
+            this.numPartNumber.Size = new System.Drawing.Size(45, 21);
             this.numPartNumber.TabIndex = 5;
             // 
             // numBookNumber
             // 
             this.numBookNumber.Location = new System.Drawing.Point(59, 192);
             this.numBookNumber.Name = "numBookNumber";
-            this.numBookNumber.Size = new System.Drawing.Size(45, 20);
+            this.numBookNumber.Size = new System.Drawing.Size(45, 21);
             this.numBookNumber.TabIndex = 4;
             this.numBookNumber.Value = new decimal(new int[] {
             2,
@@ -772,7 +783,7 @@
             // 
             this.numVolumeNumber.Location = new System.Drawing.Point(8, 192);
             this.numVolumeNumber.Name = "numVolumeNumber";
-            this.numVolumeNumber.Size = new System.Drawing.Size(45, 20);
+            this.numVolumeNumber.Size = new System.Drawing.Size(45, 21);
             this.numVolumeNumber.TabIndex = 3;
             this.numVolumeNumber.Value = new decimal(new int[] {
             9,
@@ -802,7 +813,7 @@
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(158, 176);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(101, 13);
+            this.label12.Size = new System.Drawing.Size(102, 13);
             this.label12.TabIndex = 49;
             this.label12.Text = "Вид документации";
             // 
@@ -824,7 +835,7 @@
             this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(158, 217);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(105, 13);
+            this.label11.Size = new System.Drawing.Size(107, 13);
             this.label11.TabIndex = 47;
             this.label11.Text = "Стадия разработки";
             // 
@@ -832,7 +843,7 @@
             // 
             this.tbHeadDepartment.Location = new System.Drawing.Point(8, 312);
             this.tbHeadDepartment.Name = "tbHeadDepartment";
-            this.tbHeadDepartment.Size = new System.Drawing.Size(176, 20);
+            this.tbHeadDepartment.Size = new System.Drawing.Size(176, 21);
             this.tbHeadDepartment.TabIndex = 13;
             this.tbHeadDepartment.Text = "ФИО руководителя группы";
             // 
@@ -840,7 +851,7 @@
             // 
             this.tbChiefEngineer.Location = new System.Drawing.Point(8, 272);
             this.tbChiefEngineer.Name = "tbChiefEngineer";
-            this.tbChiefEngineer.Size = new System.Drawing.Size(176, 20);
+            this.tbChiefEngineer.Size = new System.Drawing.Size(176, 21);
             this.tbChiefEngineer.TabIndex = 9;
             this.tbChiefEngineer.Text = "ФИО Главного инженера";
             // 
@@ -887,7 +898,7 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(187, 296);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(72, 13);
+            this.label8.Size = new System.Drawing.Size(73, 13);
             this.label8.TabIndex = 37;
             this.label8.Text = "Составитель";
             // 
@@ -896,7 +907,7 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(5, 296);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(117, 13);
+            this.label7.Size = new System.Drawing.Size(120, 13);
             this.label7.TabIndex = 35;
             this.label7.Text = "Руководитель группы";
             // 
@@ -914,7 +925,7 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(187, 256);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(142, 13);
+            this.label6.Size = new System.Drawing.Size(143, 13);
             this.label6.TabIndex = 33;
             this.label6.Text = "Главный инженер проекта";
             // 
@@ -932,7 +943,7 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(8, 16);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(127, 13);
+            this.label4.Size = new System.Drawing.Size(124, 13);
             this.label4.TabIndex = 29;
             this.label4.Text = "Наименование стройки";
             // 
@@ -955,9 +966,19 @@
             this.tabPageEstimate.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageEstimate.Size = new System.Drawing.Size(956, 555);
             this.tabPageEstimate.TabIndex = 1;
-            this.tabPageEstimate.Text = "Сборка смет";
+            this.tabPageEstimate.Text = "Сметы";
             this.tabPageEstimate.UseVisualStyleBackColor = true;
             this.tabPageEstimate.Paint += new System.Windows.Forms.PaintEventHandler(this.tabPageEstimate_Paint);
+            // 
+            // pgBar
+            // 
+            this.pgBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pgBar.Location = new System.Drawing.Point(6, 523);
+            this.pgBar.Name = "pgBar";
+            this.pgBar.Size = new System.Drawing.Size(714, 23);
+            this.pgBar.Step = 1;
+            this.pgBar.TabIndex = 34;
             // 
             // button1
             // 
@@ -975,7 +996,7 @@
             this.cbShowExcel.AutoSize = true;
             this.cbShowExcel.Location = new System.Drawing.Point(795, 529);
             this.cbShowExcel.Name = "cbShowExcel";
-            this.cbShowExcel.Size = new System.Drawing.Size(97, 17);
+            this.cbShowExcel.Size = new System.Drawing.Size(95, 17);
             this.cbShowExcel.TabIndex = 13;
             this.cbShowExcel.Text = "Показать том";
             this.cbShowExcel.UseVisualStyleBackColor = true;
@@ -986,7 +1007,7 @@
             this.lblNameBook.AutoSize = true;
             this.lblNameBook.Location = new System.Drawing.Point(3, 3);
             this.lblNameBook.Name = "lblNameBook";
-            this.lblNameBook.Size = new System.Drawing.Size(116, 13);
+            this.lblNameBook.Size = new System.Drawing.Size(114, 13);
             this.lblNameBook.TabIndex = 12;
             this.lblNameBook.Text = "наименование файла";
             this.lblNameBook.Visible = false;
@@ -1092,6 +1113,7 @@
             this.tabControlMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControlMain.Controls.Add(this.tabPageVolume);
             this.tabControlMain.Controls.Add(this.tabPageEstimate);
             this.tabControlMain.Controls.Add(this.tabPageSetup);
             this.tabControlMain.Location = new System.Drawing.Point(4, 4);
@@ -1100,15 +1122,113 @@
             this.tabControlMain.Size = new System.Drawing.Size(964, 581);
             this.tabControlMain.TabIndex = 0;
             // 
-            // pgBar
+            // tabPageVolume
             // 
-            this.pgBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pgBar.Location = new System.Drawing.Point(6, 523);
-            this.pgBar.Name = "pgBar";
-            this.pgBar.Size = new System.Drawing.Size(714, 23);
-            this.pgBar.Step = 1;
-            this.pgBar.TabIndex = 34;
+            this.tabPageVolume.Controls.Add(this.btnRename);
+            this.tabPageVolume.Controls.Add(this.btnRefresh);
+            this.tabPageVolume.Controls.Add(this.btnBuild);
+            this.tabPageVolume.Controls.Add(this.btnDeleteFile);
+            this.tabPageVolume.Controls.Add(this.btnAddFile);
+            this.tabPageVolume.Controls.Add(this.listViewWithReordering);
+            this.tabPageVolume.Controls.Add(this.btnSetWorkFolder);
+            this.tabPageVolume.Controls.Add(this.label24);
+            this.tabPageVolume.Controls.Add(this.tbWorkFolder);
+            this.tabPageVolume.Location = new System.Drawing.Point(4, 22);
+            this.tabPageVolume.Name = "tabPageVolume";
+            this.tabPageVolume.Size = new System.Drawing.Size(956, 555);
+            this.tabPageVolume.TabIndex = 2;
+            this.tabPageVolume.Text = "Книга";
+            this.tabPageVolume.UseVisualStyleBackColor = true;
+            // 
+            // btnBuild
+            // 
+            this.btnBuild.Location = new System.Drawing.Point(502, 529);
+            this.btnBuild.Name = "btnBuild";
+            this.btnBuild.Size = new System.Drawing.Size(75, 23);
+            this.btnBuild.TabIndex = 83;
+            this.btnBuild.Text = "Обработка";
+            this.btnBuild.UseVisualStyleBackColor = true;
+            // 
+            // btnDeleteFile
+            // 
+            this.btnDeleteFile.Location = new System.Drawing.Point(246, 529);
+            this.btnDeleteFile.Name = "btnDeleteFile";
+            this.btnDeleteFile.Size = new System.Drawing.Size(75, 23);
+            this.btnDeleteFile.TabIndex = 82;
+            this.btnDeleteFile.Text = "Удалить";
+            this.btnDeleteFile.UseVisualStyleBackColor = true;
+            this.btnDeleteFile.Click += new System.EventHandler(this.btnDeleteFile_Click);
+            // 
+            // btnAddFile
+            // 
+            this.btnAddFile.Location = new System.Drawing.Point(3, 529);
+            this.btnAddFile.Name = "btnAddFile";
+            this.btnAddFile.Size = new System.Drawing.Size(75, 23);
+            this.btnAddFile.TabIndex = 81;
+            this.btnAddFile.Text = "Добавить";
+            this.btnAddFile.UseVisualStyleBackColor = true;
+            this.btnAddFile.Click += new System.EventHandler(this.btnAddFile_Click);
+            // 
+            // listViewWithReordering
+            // 
+            this.listViewWithReordering.AllowDrop = true;
+            this.listViewWithReordering.AllowRowReorder = true;
+            this.listViewWithReordering.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.listViewWithReordering.FullRowSelect = true;
+            this.listViewWithReordering.GridLines = true;
+            this.listViewWithReordering.Location = new System.Drawing.Point(4, 49);
+            this.listViewWithReordering.Name = "listViewWithReordering";
+            this.listViewWithReordering.Size = new System.Drawing.Size(573, 474);
+            this.listViewWithReordering.TabIndex = 80;
+            this.listViewWithReordering.UseCompatibleStateImageBehavior = false;
+            this.listViewWithReordering.View = System.Windows.Forms.View.List;
+            this.listViewWithReordering.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewWithReordering_MouseDoubleClick);
+            // 
+            // btnSetWorkFolder
+            // 
+            this.btnSetWorkFolder.Image = ((System.Drawing.Image)(resources.GetObject("btnSetWorkFolder.Image")));
+            this.btnSetWorkFolder.Location = new System.Drawing.Point(547, 23);
+            this.btnSetWorkFolder.Name = "btnSetWorkFolder";
+            this.btnSetWorkFolder.Size = new System.Drawing.Size(30, 22);
+            this.btnSetWorkFolder.TabIndex = 79;
+            this.btnSetWorkFolder.UseVisualStyleBackColor = true;
+            this.btnSetWorkFolder.Click += new System.EventHandler(this.btnSetWorkFolder_Click);
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(1, 7);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(82, 13);
+            this.label24.TabIndex = 2;
+            this.label24.Text = "Рабочая папка";
+            // 
+            // tbWorkFolder
+            // 
+            this.tbWorkFolder.Location = new System.Drawing.Point(4, 23);
+            this.tbWorkFolder.Name = "tbWorkFolder";
+            this.tbWorkFolder.Size = new System.Drawing.Size(537, 21);
+            this.tbWorkFolder.TabIndex = 1;
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(165, 529);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(75, 23);
+            this.btnRefresh.TabIndex = 84;
+            this.btnRefresh.Text = "Обновить";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
+            // btnRename
+            // 
+            this.btnRename.Location = new System.Drawing.Point(84, 529);
+            this.btnRename.Name = "btnRename";
+            this.btnRename.Size = new System.Drawing.Size(75, 23);
+            this.btnRename.TabIndex = 85;
+            this.btnRename.Text = "Переимен.";
+            this.btnRename.UseVisualStyleBackColor = true;
+            this.btnRename.Click += new System.EventHandler(this.btnRename_Click);
             // 
             // MainFormAsm
             // 
@@ -1117,6 +1237,7 @@
             this.ClientSize = new System.Drawing.Size(972, 628);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.tabControlMain);
+            this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.KeyPreview = true;
             this.Name = "MainFormAsm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -1141,6 +1262,8 @@
             this.tabPageEstimate.ResumeLayout(false);
             this.tabPageEstimate.PerformLayout();
             this.tabControlMain.ResumeLayout(false);
+            this.tabPageVolume.ResumeLayout(false);
+            this.tabPageVolume.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1242,6 +1365,16 @@
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.TextBox tbNameObject;
         public System.Windows.Forms.ProgressBar pgBar;
+        private System.Windows.Forms.TabPage tabPageVolume;
+        private System.Windows.Forms.Button btnSetWorkFolder;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.TextBox tbWorkFolder;
+        private ListViewWithReordering listViewWithReordering;
+        private System.Windows.Forms.Button btnBuild;
+        private System.Windows.Forms.Button btnDeleteFile;
+        private System.Windows.Forms.Button btnAddFile;
+        private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnRename;
     }
 }
 

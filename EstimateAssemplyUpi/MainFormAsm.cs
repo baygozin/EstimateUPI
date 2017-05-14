@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using EstimatesName;
 using EstimatesAssembly;
+using VBasic = Microsoft.VisualBasic.Interaction;
 
 namespace EstimatesAssembly {
     public partial class MainFormAsm : Form {
 
-
         private BookEstimates _book;
+        private VolumeAsm _volumeAsm;
         private readonly string _configfile;
         private readonly ListViewColumnSorter _lvwColumnSorter = new ListViewColumnSorter();
         GeneratedClassContent pageContent = new GeneratedClassContent();
@@ -26,6 +28,7 @@ namespace EstimatesAssembly {
         public MainFormAsm() {
             InitializeComponent();
             _book = new BookEstimates();
+            _volumeAsm = new VolumeAsm();
             _configfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\estimate.xml";
             _book.PgBar = pgBar;
             this.lstSheet.ListViewItemSorter = _lvwColumnSorter;
@@ -95,10 +98,9 @@ namespace EstimatesAssembly {
             ReadConfig(); // читаем настройки
             ChangeNameBook(); // задаем название книги
             string pathUtils = txtToolsFilesPath.Text;
-            // создаем временные шаблоны оглавления 1-й и 2-й страницы
+            ListRefresh();
+            // создаем временный шаблон оглавления
             pageContent.CreatePackage(pathUtils + filePageContent);
-            pageTitle.CreatePackage(pathUtils + filePageTitle);
-            pageResulution.CreatePackage(pathUtils + filePageResolution);
         }
 
         // Закрытие главной формы
@@ -147,6 +149,7 @@ namespace EstimatesAssembly {
             iniSet.TbCustomer = tbCustomer.Text;
             iniSet.TbCertificate = tbCertificate.Text;
             iniSet.TbYearTitle = tbYearTitul.Text;
+            iniSet.TbWorkFolder = tbWorkFolder.Text;
             using (Stream writer = new FileStream(_configfile, FileMode.Create)) {
                 var serializer = new XmlSerializer(typeof(Config));
                 serializer.Serialize(writer, iniSet);
@@ -200,6 +203,7 @@ namespace EstimatesAssembly {
                     tbCustomer.Text = iniSet.TbCustomer;
                     tbCertificate.Text = iniSet.TbCertificate;
                     tbYearTitul.Text = iniSet.TbYearTitle;
+                    tbWorkFolder.Text = iniSet.TbWorkFolder;
                 }
             }
         }
@@ -219,6 +223,7 @@ namespace EstimatesAssembly {
 
         // Добавить в список файл со сметой или еще с чем нибудь
         private void btnAddSheet_Click(object sender, EventArgs e) {
+            dlgOpenFile.Filter = @"Excel files|*.xlsx;*.xls";
             dlgOpenFile.ShowDialog();
             if (dlgOpenFile.FileNames.Equals("")) {
                 return;
@@ -349,5 +354,77 @@ namespace EstimatesAssembly {
             }
         }
 
+        private void btnSetWorkFolder_Click(object sender, EventArgs e) {
+            folderBrowserDialog.SelectedPath = tbWorkFolder.Text;
+            folderBrowserDialog.ShowDialog();
+            tbWorkFolder.Text = folderBrowserDialog.SelectedPath;
+            SaveConfig();
+            ListRefresh();
+        }
+
+        private void listViewWithReordering_MouseDoubleClick(object sender, MouseEventArgs e) {
+            string file = tbWorkFolder.Text + @"\"+ listViewWithReordering.SelectedItems[0].Text;
+            Process.Start(file);
+        }
+
+        private void btnAddFile_Click(object sender, EventArgs e) {
+//            dlgOpenFile.Filter = @"All files|*";
+            dlgOpenFile.Filter = @"Файлы для книги|*.xlsx;*.xls;*.docx;*.doc;*.dot;*.dotx;*.pdf"; 
+            dlgOpenFile.ShowDialog();
+            string[] files = dlgOpenFile.FileNames;
+            if (files.Length != 0) {
+                foreach (var file in files) {
+                    FileInfo fileInfo = new FileInfo(file);
+                    string source = file;
+                    string dest = tbWorkFolder.Text + @"\" + fileInfo.Name;
+                    File.Copy(source, dest, true);
+                }
+                ListRefresh();
+            }
+        }
+
+        private void btnDeleteFile_Click(object sender, EventArgs e) {
+            DialogResult dialogResult;
+            if (listViewWithReordering.SelectedItems.Count == 0) {
+                MessageBox.Show(@"Ни одного файла не выбрано!", @"Внимание!");
+                return;
+            }
+            if (listViewWithReordering.SelectedItems.Count > 1) {
+                dialogResult = MessageBox.Show(@"Вы действительно хотите удалить эти файлы?", @"Внимание!", MessageBoxButtons.YesNo);
+            } else {
+                dialogResult = MessageBox.Show(@"Вы действительно хотите удалить этот файл?", @"Внимание!", MessageBoxButtons.YesNo);
+            }
+            if (dialogResult == DialogResult.No) return;
+            foreach (ListViewItem selectedItem in listViewWithReordering.SelectedItems) {
+                string file = tbWorkFolder.Text + @"\" + selectedItem.Text;
+                if (File.Exists(file)) File.Delete(file);
+            }
+            ListRefresh();
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e) {
+            ListRefresh();
+        }
+
+        private void btnRename_Click(object sender, EventArgs e) {
+            if (listViewWithReordering.SelectedItems.Count == 0) {
+                MessageBox.Show(@"Ни одного файла не выбрано!", @"Внимание!");
+                return;
+            } else if (listViewWithReordering.SelectedItems.Count > 1) {
+                MessageBox.Show(@"Выбрано больше одного файла! Так нельзя!", @"Внимание!");
+                return;
+            }
+            string oldName = listViewWithReordering.SelectedItems[0].Text;
+            FileInfo fileInfo = new FileInfo(tbWorkFolder.Text + @"\" + oldName);
+            string input = VBasic.InputBox("Введите новое имя файла", "Переименование", oldName, 700, 500);
+            if (!input.Equals("")) {
+                File.Move(tbWorkFolder.Text + @"\" + oldName, tbWorkFolder.Text + @"\" + input);
+            }
+            ListRefresh();
+        }
+
+        private void ListRefresh() {
+            _volumeAsm.reReadListFile(this.listViewWithReordering, MainFormAsm.iniSet.TbWorkFolder);
+        }
     }
 }

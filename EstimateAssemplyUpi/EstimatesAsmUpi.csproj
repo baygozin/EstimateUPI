@@ -140,6 +140,9 @@
     <Compile Include="Config.cs" />
     <Compile Include="ContentEstimate.cs" />
     <Compile Include="ListViewColumnSorter.cs" />
+    <Compile Include="ListViewWithReordering.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MainFormAsm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,6 +155,7 @@
     <Compile Include="ResEstimate.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TitleEstimates.cs" />
+    <Compile Include="VolumeAsm.cs" />
     <EmbeddedResource Include="MainFormAsm.resx">
       <DependentUpon>MainFormAsm.cs</DependentUpon>
     </EmbeddedResource>
