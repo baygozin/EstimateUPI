@@ -326,18 +326,6 @@ namespace EstimatesAssembly {
             SaveConfig();
         }
 
-        private void txtImagePath_TextChanged(object sender, EventArgs e) {
-
-        }
-
-        private void button3_Click(object sender, EventArgs e) {
-            _book.AdaptionSheets();
-        }
-
-        private void cbStageDevelope_SelectedIndexChanged(object sender, EventArgs e) {
-
-        }
-
         private void MainFormAsm_KeyDown(object sender, KeyEventArgs e) {
             if (e.KeyData == (Keys.Insert)) {
                 btnAddSheet_Click(sender, e);
@@ -431,6 +419,20 @@ namespace EstimatesAssembly {
                 }
             }
             ListRefresh();
+        }
+
+        private void btnImagePath_Click_1(object sender, EventArgs e) {
+            folderBrowserDialog.SelectedPath = txtImagePath.Text;
+            folderBrowserDialog.ShowDialog();
+            txtImagePath.Text = folderBrowserDialog.SelectedPath;
+            SaveConfig();
+        }
+
+        private void btnEstimatePathAndName_Click_1(object sender, EventArgs e) {
+            folderBrowserDialog.SelectedPath = txtEsimatePath.Text;
+            folderBrowserDialog.ShowDialog();
+            txtEsimatePath.Text = folderBrowserDialog.SelectedPath;
+            SaveConfig();
         }
     }
 }

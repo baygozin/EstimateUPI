@@ -275,6 +275,7 @@
             this.btnEstimatePathAndName.Size = new System.Drawing.Size(30, 24);
             this.btnEstimatePathAndName.TabIndex = 36;
             this.btnEstimatePathAndName.UseVisualStyleBackColor = true;
+            this.btnEstimatePathAndName.Click += new System.EventHandler(this.btnEstimatePathAndName_Click_1);
             // 
             // lstSheet
             // 
@@ -577,6 +578,7 @@
             this.btnImagePath.Size = new System.Drawing.Size(30, 23);
             this.btnImagePath.TabIndex = 21;
             this.btnImagePath.UseVisualStyleBackColor = true;
+            this.btnImagePath.Click += new System.EventHandler(this.btnImagePath_Click_1);
             // 
             // cbPriceLevelL
             // 

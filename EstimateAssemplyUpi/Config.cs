@@ -4,6 +4,7 @@ namespace EstimatesAssembly {
     public class Config {
         public string TxtEsimatePath;
         public string TxtImagePath;
+        public string TxtAssemblyPath;
         public string TxtToolsFilesPath;
         public string ListTypeDocument;
         public string TbNameBuilding;

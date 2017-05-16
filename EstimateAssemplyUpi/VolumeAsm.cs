@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -11,6 +12,8 @@ using DocumentFormat.OpenXml.Packaging;
 namespace EstimatesAssembly {
     public class VolumeAsm {
 
+        Dictionary<string, string> fields = new Dictionary<string, string>();
+
         public Word._Application _appWord;
         public Word._Document _docWord;
         public Excel._Application _appExcel;
@@ -20,9 +23,14 @@ namespace EstimatesAssembly {
         Object trueObj = true;
         Object falseObj = false;
         private string propertyDocName = "Comments";
-        private string propertyDocValue = "собранная книга со сметами";
+        private string propertyExcelDocValue = "собранная книга со сметами";
+        private string propertyWordDocTitleAll = "титул генпроектировщика";
+        private string propertyWordDocTitleUpi = "титул юпи";
+        private string propertyWordDocOgl = "оглавление";
+        private string propertyWordDocPz = "пояснительная записка";
 
-
+        public VolumeAsm() {
+        }
 
         public void reReadListFile(ListViewWithReordering listView, string folder) {
             if (Directory.Exists(folder)) {
@@ -81,20 +89,31 @@ namespace EstimatesAssembly {
 
         public void RebuildDocWord(string file) {
             //создаем обьект приложения word
+            
             _appWord = new Word.Application() { Visible = false };
-            // создаем путь к файлу
-            Object templatePathObj = file;
-
-            _docWord = _appWord.Documents.Add(ref templatePathObj, ref _missingObj, ref _missingObj, ref _missingObj);
-            foreach (Word.Bookmark documentBookmark in _docWord.Bookmarks) {
-                //documentBookmark.Range.Text = "";
-                // Обработаем все закладки
+            _docWord = _appWord.Documents.Open(file);
+            object val = GetWordDocumentProperty(propertyDocName);
+            if (val != null) {
+                string propValue = val as string;
+                string[] prop = propValue.Split(' ');
+                if (prop[0].Equals("шаблон")) {
+                    if (prop[1].Equals("титул")) {
+                        string spisok = "";
+                        foreach (Word.Bookmark documentBookmark in _docWord.Bookmarks) {
+                            //documentBookmark.Range.Text = "";
+                            // Обработаем все закладки
+                            spisok = spisok + documentBookmark.Name + "\n\r";
+                        }
+                        MessageBox.Show(spisok, "=============");
+                    }
+                }
             }
             _docWord.Close();
             _appWord.Quit();
         }
 
         public void RebuildDocExcel(string file) {
+            //создаем обьект приложения excel
             _appExcel = new Excel.Application() { Visible = false, DisplayAlerts = false } ;
             _excelWorkbook = _appExcel.Workbooks.Open(file);
             if (_appExcel.Workbooks.Count == 0) {
@@ -103,18 +122,37 @@ namespace EstimatesAssembly {
                 return;
             }
             _excelWorkbook = _appExcel.ActiveWorkbook;
-            string propValue = GetDocumentProperty(propertyDocName) as string;
-            if (propValue.Equals(propertyDocValue)) {
-                //MessageBox.Show(@"Это наша книга!", "Урааааа!!!");
-            } else {
-                MessageBox.Show(@"Это не наша книга!", "Внимание!");
-            }
+            object val = GetExcelDocumentProperty(propertyDocName);
+            if (val != null) {
+                string propValue = val as string;
+                if (propValue.Equals(propertyExcelDocValue)) {
+                    //MessageBox.Show(@"Это наша книга!", "Урааааа!!!");
+                } 
+            } 
             _excelWorkbook.Close();
             _appExcel.Quit();
         }
 
-        private object GetDocumentProperty(string propertyName) {
+        public object GetWordDocumentProperty(string propertyName) {
             object returnVal = null;
+            if (_appWord.ActiveDocument == null) {
+                return returnVal;
+            }
+            dynamic properties = _appWord.ActiveDocument.BuiltInDocumentProperties;
+            foreach (dynamic property in properties) {
+                string name = property.Name;
+                if (name.Equals(propertyName)) {
+                    returnVal = property.Value;
+                }
+            }
+            return returnVal;
+        }
+
+        private object GetExcelDocumentProperty(string propertyName) {
+            object returnVal = null;
+            if (_appExcel.ActiveWorkbook == null) {
+                return returnVal;
+            }
             dynamic properties = _appExcel.ActiveWorkbook.BuiltinDocumentProperties;
             foreach (dynamic property in properties) {
                 string name = property.Name;
@@ -122,7 +160,6 @@ namespace EstimatesAssembly {
                     returnVal = property.Value;
                 }
             }
-            string test = returnVal.ToString();
             return returnVal;
         }
 
