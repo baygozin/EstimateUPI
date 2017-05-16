@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -25,6 +26,8 @@ namespace EstimatesAssembly {
     class BookEstimates {
         private const int PixelW = 100;
         private const int PixelH = 50;
+        private string propertyDocName = "Comments";
+        private string propertyDocValue = "собранная книга со сметами";
         private ProgressBar _pgBar;
 
         public ProgressBar PgBar {
@@ -32,20 +35,11 @@ namespace EstimatesAssembly {
             set { _pgBar = value; }
         }
 
-        struct Ogl {
-            public string col1;
-            public string col2;
-        }
-
         private string _nameBook;
         private string _pathBook;
         public Application Ex;
         public Workbook Wb;
         public Workbook TmpWb;
-        // Для перенумерации листов книги
-        private const int StopPos = 49;
-        private const int EndPos = 59;
-        private int delta = 0;
 
         public string NameBook {
             get { return _nameBook; }
@@ -141,6 +135,7 @@ namespace EstimatesAssembly {
                 }
             }
             SetActivePrinterPDF();
+            SetDocumentProperty(propertyDocName, propertyDocValue);
         }
 
         // Удалить элемент(ы) из книги
@@ -178,15 +173,15 @@ namespace EstimatesAssembly {
             if (workbook.Sheets.Count == 0) {
                 return null;
             }
-            for (int i = 1; i < workbook.Sheets.Count + 1; i++) {
-                list.Add(workbook.Sheets[i].Name);
+            foreach ( Worksheet sheet in workbook.Sheets) {
+                list.Add(sheet.Name);
             }
             return list;
         }
 
         // Сохранение тома
         public void SaveWorkbook() {
-            string fullname = Path.Combine(_pathBook, _nameBook + @".xls");
+            string fullname = Path.Combine(_pathBook, _nameBook + @".xlsx");
             if (File.Exists(fullname)) {
                 DialogResult dlgres = MessageBox.Show(@"Книга уже существует. Переписать?", @"Внимание!",
                     MessageBoxButtons.OKCancel);
@@ -198,7 +193,7 @@ namespace EstimatesAssembly {
             Ex.UserControl = true;
             try {
                 Ex.ActiveWorkbook.SaveAs(fullname,
-                    XlFileFormat.xlWorkbookNormal, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+                    XlFileFormat.xlWorkbookDefault, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
                     XlSaveAsAccessMode.xlNoChange, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
                 MessageBox.Show(@"Книга успешно сохранена!");
             } catch (Exception e) {
@@ -423,24 +418,12 @@ namespace EstimatesAssembly {
                 return;
             }
             foreach (Worksheet worksheet in mainBook.Sheets) {
-                if (worksheet.Name.Contains(@"Оглавление") || (worksheet.Name.Contains(@"Лист")))
-                    worksheet.Delete();
+                if (worksheet.Name.Contains(@"Лист")) worksheet.Delete();
             }
-            // Вставим оглавление
-            Workbook tmpContent = Ex.Workbooks.Open(MainFormAsm.iniSet.TxtToolsFilesPath + @"\contentpage.xlsx");
-            tmpContent.Worksheets[1].Copy(mainBook.Sheets[1], Type.Missing);
-            tmpContent.Close();
-            Worksheet ogl = mainBook.Sheets[1];
-            ogl.Name = @"Оглавление";
-            ogl.Cells[2, 5] = _nameBook;
-
             // Включим разрывы страниц
             _pgBar.Maximum = mainBook.Sheets.Count;
             foreach (Worksheet worksheet in mainBook.Sheets) {
                 _pgBar.Value += 1;
-                if (worksheet.Name.Contains(@"Оглавление")) {
-                    continue;
-                }
                 worksheet.PageSetup.Orientation = XlPageOrientation.xlLandscape;
                 worksheet.PageSetup.Zoom = false;
                 worksheet.PageSetup.FitToPagesWide = 1;
@@ -458,77 +441,24 @@ namespace EstimatesAssembly {
             }
             _pgBar.Value = 0;
 
-            int ns = 3;
             int x = 1;
-            Ogl a = new Ogl();
-            if (mainBook.Sheets.Count < StopPos - 1) {
-                Range clr = ogl.Range["A60", "L125"];
-                clr.Clear();
-            }
             _pgBar.Maximum = mainBook.Sheets.Count;
             foreach (Worksheet worksheet in mainBook.Sheets) {
                 _pgBar.Value += 1;
                 worksheet.Select();
+                Ex.ActiveWindow.View = XlWindowView.xlPageBreakPreview;
+                worksheet.PageSetup.RightFooter = "&P";
+                worksheet.PageSetup.LeftHeader = " ";
+                worksheet.PageSetup.CenterHeader = " ";
+                worksheet.PageSetup.RightHeader = " ";
                 worksheet.PageSetup.FirstPageNumber = x;
-                a = GetColumnsSheet(worksheet);
-                if (!worksheet.Name.Equals("Оглавление")) {
-                    ogl.Cells[ns, 4] = ns - delta - 2;
-                    ogl.Cells[ns, 5] = a.col1;
-                    ogl.Cells[ns, 8] = a.col2;
-                    Range range_1 = ogl.Cells[ns, 12];
-                    range_1.Value2 = String.Format("{0}", worksheet.PageSetup.FirstPageNumber);
-                    ogl.Hyperlinks.Add(range_1, "", "'" + worksheet.Name + "'!A1", Type.Missing, "Hyperlink Test");
-                    Range ssss = ogl.Rows[ns];
-                    ssss.RowHeight = 12.75;
-                    ns++;
-                }
-                if (ns == StopPos + 1) {
-                    ns = EndPos + 1;
-                    delta = 10;
-                }
-                x = worksheet.PageSetup.FirstPageNumber + worksheet.PageSetup.Pages.Count;
+                int i = worksheet.PageSetup.FirstPageNumber;
+                int j = worksheet.PageSetup.Pages.Count;
+                x = i + j;
             }
             _pgBar.Value = 0;
-            delta = 0;
-            if (ns < EndPos + 1) {
-                StampFill(false, ref ogl, x - 2);
-            } else {
-                StampFill(true, ref ogl, x - 2);
-            }
             AdaptionSheets();
-        }
-
-        // Заполним штамп оглавления
-        private void StampFill(Boolean twoPage, ref Worksheet stamp, int x) {
-            stamp.Cells[EndPos - 4, 5] = MainFormAsm.iniSet.CbMadeInText;
-            InsertImage(ref stamp, EndPos - 5, 7, MainFormAsm.iniSet.CbMadeInText);
-            stamp.Cells[EndPos - 2, 5] = MainFormAsm.iniSet.TbHeadDepartment;
-            InsertImage(ref stamp, EndPos - 3, 7, MainFormAsm.iniSet.TbHeadDepartment);
-            stamp.Cells[EndPos - 1, 5] = MainFormAsm.iniSet.CbGipText;
-            InsertImage(ref stamp, EndPos - 2, 7, MainFormAsm.iniSet.CbGipText);
-            stamp.Cells[EndPos - 4, 8] = MainFormAsm.iniSet.DateToStamp.ToString("MM.yy");
-            stamp.Cells[EndPos - 2, 8] = MainFormAsm.iniSet.DateToStamp.ToString("MM.yy");
-            stamp.Cells[EndPos - 1, 8] = MainFormAsm.iniSet.DateToStamp.ToString("MM.yy");
-            stamp.Cells[EndPos - 7, 9] = MainFormAsm.iniSet.TbCodeObject;
-            stamp.Cells[EndPos - 5, 9] = MainFormAsm.iniSet.TbNameBuilding + "\nОбъектные и локальные сметы";
-            stamp.Cells[EndPos - 2, 10] = "ООО «Югорский Проектный Институт»";
-            stamp.Cells[EndPos - 4, 10] = MainFormAsm.iniSet.CbStageDevelope.Substring(0, 1);
-            stamp.Cells[EndPos - 4, 11] = "1";
-            stamp.Cells[EndPos - 4, 12] = (x + 1).ToString(CultureInfo.InvariantCulture);
-            stamp.Cells[EndPos - 4, 2] = MainFormAsm.iniSet.TbInventoryNumber;
-            if (int.Parse(MainFormAsm.iniSet.NumModification) != 0) {
-                stamp.Cells[EndPos - 6, 3] = MainFormAsm.iniSet.NumModification;
-                stamp.Cells[EndPos - 6, 4] = "-";
-                stamp.Cells[EndPos - 6, 5] = MainFormAsm.iniSet.TbPageNumber;
-                stamp.Cells[EndPos - 6, 6] = MainFormAsm.iniSet.TbDocumentNumber;
-                stamp.Cells[EndPos - 6, 8] = MainFormAsm.iniSet.DateAjustment.ToString("MM.yy");
-                InsertImage(ref stamp, EndPos - 7, 7, MainFormAsm.iniSet.CbMadeInText);
-            }
-
-            if (twoPage) {
-                stamp.Cells[EndPos + 55, 2] = MainFormAsm.iniSet.TbInventoryNumber;
-                stamp.Cells[EndPos + 57, 9] = MainFormAsm.iniSet.TbCodeObject;
-            }
+            
         }
 
         // Вставить картинку
@@ -567,58 +497,6 @@ namespace EstimatesAssembly {
             string n = name.Replace(".", "_").Replace(" ", "_");
             n = n.Substring(0, n.Length - 1);
             return n;
-        }
-
-        // Вытаскиваем из таблицы номер и наименование сметы или объекта для оглавления
-        private Ogl GetColumnsSheet(_Worksheet worksheet) {
-            Ogl o = new Ogl();
-            Range range = worksheet.Cells.Find(@"ЛОКАЛЬНЫЙ СМЕТНЫЙ РАСЧЕТ");
-            if (range != null) {
-                string num = worksheet.Name.Substring(2);
-                o.col1 = @"ЛСР №" + num;
-                //o.col2 = @"локальный сметный расчет";
-                o.col2 = worksheet.Range["A12"].Text;
-                return o;
-            }
-            range = worksheet.Cells.Find(@"ОБЪЕКТНЫЙ СМЕТНЫЙ РАСЧЕТ");
-            if (range != null) {
-                string num = worksheet.Name.Substring(2);
-                o.col1 = @"ОСР №" + num;
-                o.col2 = worksheet.Range["A8"].Text; ;
-                return o;
-            }
-            range = worksheet.Cells.Find(@"ВЕДОМОСТЬ РЕСУРСОВ");
-            if (range != null) {
-                string num = worksheet.Name.Substring(1);
-                o.col1 = @"РВ №" + num;
-                o.col2 = @"Ресурсная ведомость";
-                return o;
-            }
-            range = worksheet.Cells.Find(@"СВОДНЫЙ СМЕТНЫЙ РАСЧЕТ СТОИМОСТИ СТРОИТЕЛЬСТВА");
-            if (range != null) {
-                string tek = worksheet.Name.Substring(2);
-                string price = worksheet.Range["B18"].Text;
-                if (price != null) price = price.Substring(price.LastIndexOf(@"на"));
-                if (tek.Contains("01")) {
-                    tek = "баз";
-                    o.col2 = @"Сводный сметный расчет в базовых ценах " + price;
-                } else {
-                    tek = "тек";
-                    o.col2 = @"Сводный сметный расчет в текущих ценах " + price;
-                }
-                o.col1 = @"ССР " + tek;
-                return o;
-            }
-            range = worksheet.Cells.Find(@"Локальный ресурсный сметный расчет");
-            if (range != null) {
-                string num = worksheet.Name.Substring(2);
-                o.col1 = @"ЛРС №" + num;
-                string text = worksheet.Range["A6"].Text;
-                text = ConvertRSName(text.Substring(3));
-                o.col2 = text;
-                return o;
-            }
-            return o;
         }
 
         //public void RebuildWorksheets() {
@@ -831,13 +709,14 @@ namespace EstimatesAssembly {
             string numberEstimate = sheet.Range["G9"].Text;
             string nameObject = MainFormAsm.iniSet.TbNameBuilding;
             numberEstimate = numberEstimate.Substring(numberEstimate.LastIndexOf("№") + 2);
+            string tmpNameObject = sheet.Range["G6"].Text;
             Range tmprange = sheet.Range["A6:Q6"];
             tmprange.Merge();
             tmprange.Font.Bold = true;
             tmprange.Font.Underline = true;
             tmprange.EntireRow.RowHeight = 20;
             tmprange.EntireRow.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-            tmprange.Value2 = nameObject;
+            tmprange.Value2 = tmpNameObject;
 
             tmprange = sheet.Range["A7:Q7"];
             tmprange.Merge();
@@ -944,10 +823,11 @@ namespace EstimatesAssembly {
             sheet.UsedRange.Font.Name = "Times New Roman";
             // Затрем все лишнее сверху ===============================================
             ((Range)sheet.Range["J1"]).Clear();
+            string tmpNameObj = sheet.Range["E2"].Text;
             sheet.Range["A2:J2"].Merge();
             sheet.Range["A2:J2"].Font.Bold = true;
             sheet.Range["A2:J2"].Font.Underline = true;
-            sheet.Range["A2:J2"].Value2 = MainFormAsm.iniSet.TbNameBuilding;
+            sheet.Range["A2:J2"].Value2 = tmpNameObj;
 
             tmp = sheet.Range["E3"].Text;
             sheet.Range["A3:J3"].Merge();
@@ -988,17 +868,6 @@ namespace EstimatesAssembly {
 
             Range rangeWork;
             string nameWorks = numberOE;
-            // Капремонт
-            if (MainFormAsm.iniSet.CbRebuild) {
-                rangeWork = sheet.Cells.Find(@"строительных работ");
-                if (rangeWork != null) rangeWork.Value2 = @"ремонтно-строительных работ";
-                rangeWork = sheet.Cells.Find(@"монтажных работ");
-                if (rangeWork != null) rangeWork.Value2 = @"ремонтно-монтажных работ";
-                rangeWork = sheet.Cells.Find(@"мебели, инвентаря");
-                if (rangeWork != null) rangeWork.Value2 = @"комплектующих и запасных частей";
-                rangeWork = sheet.Cells.Find(@"на строительство");
-                if (rangeWork != null) rangeWork.Value2 = @"";
-            }
             // Это уровень цен ===============================================
             string stmp = @"Составлен(а) в ценах по состоянию на ";
             rangeWork = sheet.Range["C14"];
@@ -1026,9 +895,6 @@ namespace EstimatesAssembly {
                 rangeWork = sheet.Cells[rowBoss, "C"];
                 rangeWork.Value2 = @"Руководитель группы смет :";
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignRight;
-                //rangeWork = sheet.Cells[rowMadeIn, "C"];
-                //rangeWork.Value2 = @"Составил :";
-                //rangeWork.HorizontalAlignment = XlHAlign.xlHAlignRight;
 
                 rangeWork = sheet.Cells[rowGip, "D"];
                 rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.CbGipText;
@@ -1036,19 +902,12 @@ namespace EstimatesAssembly {
                 rangeWork = sheet.Cells[rowBoss, "D"];
                 rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.TbHeadDepartment;
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                //rangeWork = sheet.Cells[rowMadeIn, "D"];
-                //rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.CbMadeInText;
-                //rangeWork.HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                // Вставим картинки
                 if (!MainFormAsm.iniSet.CbGip.Equals("")) {
                     InsertImage(ref sheet, rowGip, 5, MainFormAsm.iniSet.CbGipText);
                 }
                 if (!MainFormAsm.iniSet.TbHeadDepartment.Equals("")) {
                     InsertImage(ref sheet, rowBoss, 5, MainFormAsm.iniSet.TbHeadDepartment);
                 }
-                //if (!MainFormAsm.iniSet.CbMadeIn.Equals("")) {
-                //    InsertImage(ref sheet, rowMadeIn, 5, MainFormAsm.iniSet.CbMadeInText);
-                //}
             }
             sheet.Name = @"ОС" + numberOE;
             return sheet.Name;
@@ -1126,6 +985,7 @@ namespace EstimatesAssembly {
             return nameWorks;
         }
 
+        // Ведомость объемов работ
         private string WorkWithExcelVR(_Worksheet sheet) {
             // Это наименование работ и т.д. ===============================================
             var rangeWork = sheet.Range["C7", "C7"];
@@ -1173,5 +1033,34 @@ namespace EstimatesAssembly {
                 sender = null;
             }
         }
+
+        private object GetDocumentProperty(string propertyName) {
+            object returnVal = null;
+            dynamic properties = Ex.ActiveWorkbook.BuiltinDocumentProperties;
+            foreach (dynamic property in properties) {
+                string name = property.Name;
+                if (name.Equals(propertyName)) {
+                    returnVal = property.Value;
+                }
+            }
+            string test = returnVal.ToString();
+            return returnVal;
+        }
+
+        protected void SetDocumentProperty(string propertyName, string propertyValue) {
+            bool propertyExists = false;
+            dynamic properties = Ex.ActiveWorkbook.BuiltinDocumentProperties;
+            foreach (dynamic prop in properties) {
+                if (prop.Name == propertyName) {
+                    prop.Value = propertyValue;
+                    propertyExists = true;
+                    break;
+                }
+            }
+            if (!propertyExists) {
+                properties.Add(propertyName, false, MsoDocProperties.msoPropertyTypeString, propertyValue, Type.Missing);
+            }
+        }
+
     }
 }

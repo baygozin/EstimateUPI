@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using EstimatesName;
 using EstimatesAssembly;
+using Microsoft.VisualBasic;
 using VBasic = Microsoft.VisualBasic.Interaction;
 
 namespace EstimatesAssembly {
@@ -16,22 +17,41 @@ namespace EstimatesAssembly {
         private VolumeAsm _volumeAsm;
         private readonly string _configfile;
         private readonly ListViewColumnSorter _lvwColumnSorter = new ListViewColumnSorter();
-        GeneratedClassContent pageContent = new GeneratedClassContent();
-        GeneratedClass pageTitle = new GeneratedClass();
-        GeneratedClassResulution pageResulution = new GeneratedClassResulution();
-        private string filePageContent = @"\contentpage.xlsx";
-        private string filePageTitle = @"\titlepage.xlsx";
-        private string filePageResolution = @"\resolutionpage.xlsx";
         public static Config iniSet = new Config();
 
-        // Конструктор
+
+        Object missingObj = System.Reflection.Missing.Value;
+
         public MainFormAsm() {
+
             InitializeComponent();
             _book = new BookEstimates();
             _volumeAsm = new VolumeAsm();
             _configfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\estimate.xml";
             _book.PgBar = pgBar;
             this.lstSheet.ListViewItemSorter = _lvwColumnSorter;
+            AppDomain.CurrentDomain.UnhandledException += delegate (object sender, UnhandledExceptionEventArgs args)
+            {
+                if (_book != null) {
+                    _book.Ex.Application.Quit();
+                }
+                if (_volumeAsm != null) {
+                    
+                }
+                Trace.WriteLine("Global exception: " + args.ExceptionObject.ToString());
+            };
+            Application.ThreadException += delegate (Object sender, ThreadExceptionEventArgs args)
+            {
+                if (_book != null) {
+                    _book.Ex.Application.Quit();
+                }
+                if (_volumeAsm != null) {
+
+                }
+                Trace.WriteLine("Global exception: " + args.Exception.ToString());
+                Environment.Exit(0);
+            };
+
         }
 
         // Добавить ГИПа в список
@@ -78,14 +98,6 @@ namespace EstimatesAssembly {
             SaveConfig();
         }
 
-        // Задать путь для служебных файлов
-        private void btnToolsFilesPath_Click(object sender, EventArgs e) {
-            folderBrowserDialog.SelectedPath = txtToolsFilesPath.Text;
-            folderBrowserDialog.ShowDialog();
-            txtToolsFilesPath.Text = folderBrowserDialog.SelectedPath;
-            SaveConfig();
-        }
-
         // Выход из программы
         private void button1_Click(object sender, EventArgs e) {
             _book.CloseBook();
@@ -97,10 +109,8 @@ namespace EstimatesAssembly {
         private void MainFormAsm_Load(object sender, EventArgs e) {
             ReadConfig(); // читаем настройки
             ChangeNameBook(); // задаем название книги
-            string pathUtils = txtToolsFilesPath.Text;
             ListRefresh();
             // создаем временный шаблон оглавления
-            pageContent.CreatePackage(pathUtils + filePageContent);
         }
 
         // Закрытие главной формы
@@ -112,7 +122,6 @@ namespace EstimatesAssembly {
         private void SaveConfig() {
             iniSet.TxtEsimatePath = txtEsimatePath.Text;
             iniSet.TxtImagePath = txtImagePath.Text;
-            iniSet.TxtToolsFilesPath = txtToolsFilesPath.Text;
             iniSet.ListTypeDocument = cbTypeDocumentation.Text;
             iniSet.TbNameBuilding = tbNameBuilding.Text;
             iniSet.TbNameObject = tbNameObject.Text;
@@ -125,7 +134,6 @@ namespace EstimatesAssembly {
             iniSet.TbChiefEngineer = tbChiefEngineer.Text;
             iniSet.TbHeadDepartment = tbHeadDepartment.Text;
             iniSet.DateToStamp = dateToStamp.Value;
-            iniSet.DateAjustment = dateAjustment.Value;
             iniSet.CbPriceLevelL = cbPriceLevelL.Value;
             iniSet.CbPriceLevelO = cbPriceLevelO.Value;
             iniSet.CbQuarter = cbQuarter.Checked;
@@ -133,10 +141,6 @@ namespace EstimatesAssembly {
             iniSet.CbInsertSignLE = cbInsertSignLE.Checked;
             iniSet.CbInsertSignSS = cbInsertSignSS.Checked;
             iniSet.CbInsertSignLR = cbInsertSignLR.Checked;
-            iniSet.CbRebuild = cbRebuild.Checked;
-            iniSet.NumModification = numModification.Text;
-            iniSet.TbDocumentNumber = tbDocumentNumber.Text;
-            iniSet.TbPageNumber = tbPageNumber.Text;
             iniSet.CbGip = new string[cbGip.Items.Count];
             cbGip.Items.CopyTo(iniSet.CbGip, 0);
             iniSet.CbMadeIn = new string[cbMadeIn.Items.Count];
@@ -164,7 +168,6 @@ namespace EstimatesAssembly {
                     iniSet = (Config)serializer.Deserialize(stream);
                     txtEsimatePath.Text = iniSet.TxtEsimatePath;
                     txtImagePath.Text = iniSet.TxtImagePath;
-                    txtToolsFilesPath.Text = iniSet.TxtToolsFilesPath;
                     cbTypeDocumentation.Text = iniSet.ListTypeDocument;
                     tbNameBuilding.Text = iniSet.TbNameBuilding;
                     tbNameObject.Text = iniSet.TbNameObject;
@@ -177,18 +180,13 @@ namespace EstimatesAssembly {
                     tbChiefEngineer.Text = iniSet.TbChiefEngineer;
                     tbHeadDepartment.Text = iniSet.TbHeadDepartment;
                     dateToStamp.Value = iniSet.DateToStamp;
-                    dateAjustment.Value = iniSet.DateAjustment;
                     cbPriceLevelL.Value = iniSet.CbPriceLevelL;
                     cbPriceLevelO.Value = iniSet.CbPriceLevelO;
-                    numModification.Text = iniSet.NumModification;
-                    tbDocumentNumber.Text = iniSet.TbDocumentNumber;
-                    tbPageNumber.Text = iniSet.TbPageNumber;
                     cbQuarter.Checked = iniSet.CbQuarter;
                     cbInsertSignOE.Checked = iniSet.CbInsertSignOE;
                     cbInsertSignLE.Checked = iniSet.CbInsertSignLE;
                     cbInsertSignSS.Checked = iniSet.CbInsertSignSS;
                     cbInsertSignLR.Checked = iniSet.CbInsertSignLR;
-                    cbRebuild.Checked = iniSet.CbRebuild;
                     if (iniSet.CbGip != null) {
                         cbGip.Items.AddRange(iniSet.CbGip);
                         cbGip.Text = iniSet.CbGipText;
@@ -218,7 +216,6 @@ namespace EstimatesAssembly {
             _book.NameBook = @"Том-" + numVolumeNumber.Text + "-" + numBookNumber.Text
                + "-" + numPartNumber.Text;
             _book.PathBook = txtEsimatePath.Text + "\\";
-            lblNameBook.Text = _book.PathBook + _book.NameBook;
         }
 
         // Добавить в список файл со сметой или еще с чем нибудь
@@ -341,13 +338,6 @@ namespace EstimatesAssembly {
 
         }
 
-        private void btnToolsFilesPath_Click_1(object sender, EventArgs e) {
-            folderBrowserDialog.SelectedPath = txtEsimatePath.Text;
-            folderBrowserDialog.ShowDialog();
-            txtToolsFilesPath.Text = folderBrowserDialog.SelectedPath;
-            SaveConfig();
-        }
-
         private void MainFormAsm_KeyDown(object sender, KeyEventArgs e) {
             if (e.KeyData == (Keys.Insert)) {
                 btnAddSheet_Click(sender, e);
@@ -368,8 +358,7 @@ namespace EstimatesAssembly {
         }
 
         private void btnAddFile_Click(object sender, EventArgs e) {
-//            dlgOpenFile.Filter = @"All files|*";
-            dlgOpenFile.Filter = @"Файлы для книги|*.xlsx;*.xls;*.docx;*.doc;*.dot;*.dotx;*.pdf"; 
+            dlgOpenFile.Filter = @"Файлы для книги|*.xlsx;*.xls;*.docx;*.doc;*.pdf"; 
             dlgOpenFile.ShowDialog();
             string[] files = dlgOpenFile.FileNames;
             if (files.Length != 0) {
@@ -416,15 +405,32 @@ namespace EstimatesAssembly {
             }
             string oldName = listViewWithReordering.SelectedItems[0].Text;
             FileInfo fileInfo = new FileInfo(tbWorkFolder.Text + @"\" + oldName);
-            string input = VBasic.InputBox("Введите новое имя файла", "Переименование", oldName, 700, 500);
+            string extFile = fileInfo.Extension;
+            string nameFile = fileInfo.Name.Substring(0, fileInfo.Name.IndexOf(extFile));
+            string input = VBasic.InputBox("Введите новое имя файла", "Переименование", nameFile, 700, 500);
             if (!input.Equals("")) {
-                File.Move(tbWorkFolder.Text + @"\" + oldName, tbWorkFolder.Text + @"\" + input);
+                File.Move(tbWorkFolder.Text + @"\" + oldName, tbWorkFolder.Text + @"\" + input + extFile);
             }
             ListRefresh();
         }
 
         private void ListRefresh() {
             _volumeAsm.reReadListFile(this.listViewWithReordering, MainFormAsm.iniSet.TbWorkFolder);
+        }
+
+        // Обработка документов - вставка текста, нумерация, коррекция и т.д.
+        private void btnBuild_Click(object sender, EventArgs e) {
+            if (listViewWithReordering.SelectedItems.Count == 0) {
+                MessageBox.Show(@"Ни одного файла не выбрано!", @"Внимание!");
+                return;
+            }
+            foreach (ListViewItem selectedItem in listViewWithReordering.SelectedItems) {
+                string file = tbWorkFolder.Text + @"\" + selectedItem.Text;
+                if (File.Exists(file)) {
+                    _volumeAsm.RebuildDoc(file);
+                }
+            }
+            ListRefresh();
         }
     }
 }

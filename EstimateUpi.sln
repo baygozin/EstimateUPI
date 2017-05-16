@@ -1,18 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstimatesCloseUpi", "EstimatesCloseUpi\EstimatesCloseUpi.csproj", "{B2413908-06F0-434F-882F-B08F8FAC64DF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstimatesAsmUpi", "EstimateAssemplyUpi\EstimatesAsmUpi.csproj", "{06D6AD8C-671C-4F82-9DCE-BA39D8D8FC06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsmBook", "AsmBook\AsmBook.csproj", "{8E690818-F1F3-4EAE-A85B-C5B0303498FF}"
-EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -46,20 +41,11 @@ Global
 		{06D6AD8C-671C-4F82-9DCE-BA39D8D8FC06}.Release|x64.Build.0 = Release|Any CPU
 		{06D6AD8C-671C-4F82-9DCE-BA39D8D8FC06}.Release|x86.ActiveCfg = Release|Any CPU
 		{06D6AD8C-671C-4F82-9DCE-BA39D8D8FC06}.Release|x86.Build.0 = Release|Any CPU
-		{8E690818-F1F3-4EAE-A85B-C5B0303498FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8E690818-F1F3-4EAE-A85B-C5B0303498FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8E690818-F1F3-4EAE-A85B-C5B0303498FF}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{8E690818-F1F3-4EAE-A85B-C5B0303498FF}.Debug|x64.Build.0 = Debug|Any CPU
-		{8E690818-F1F3-4EAE-A85B-C5B0303498FF}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8E690818-F1F3-4EAE-A85B-C5B0303498FF}.Debug|x86.Build.0 = Debug|Any CPU
-		{8E690818-F1F3-4EAE-A85B-C5B0303498FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8E690818-F1F3-4EAE-A85B-C5B0303498FF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8E690818-F1F3-4EAE-A85B-C5B0303498FF}.Release|x64.ActiveCfg = Release|Any CPU
-		{8E690818-F1F3-4EAE-A85B-C5B0303498FF}.Release|x64.Build.0 = Release|Any CPU
-		{8E690818-F1F3-4EAE-A85B-C5B0303498FF}.Release|x86.ActiveCfg = Release|Any CPU
-		{8E690818-F1F3-4EAE-A85B-C5B0303498FF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
