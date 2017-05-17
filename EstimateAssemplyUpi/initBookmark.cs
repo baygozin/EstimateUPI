@@ -16,11 +16,11 @@ namespace EstimatesAssembly {
             mapBookmark.Add("шифр", MainFormAsm.iniSet.TbCodeObject);
             mapBookmark.Add("том", MainFormAsm.iniSet.NumVolumeNumber);
             mapBookmark.Add("всего_томов", MainFormAsm.iniSet.TbVolCount);
-            mapBookmark.Add("подпись_руководителя", "подпись");
+            mapBookmark.Add("подпись_руководителя", "");
             mapBookmark.Add("должность_руководителя", MainFormAsm.iniSet.TbChiefPsition);
             mapBookmark.Add("фио_гип", MainFormAsm.iniSet.TbGipFiol);
             mapBookmark.Add("фио_руководителя", MainFormAsm.iniSet.TbChiefFio);
-            mapBookmark.Add("подпись_гип", "подпись");
+            mapBookmark.Add("подпись_гип", "");
             mapBookmark.Add("год", MainFormAsm.iniSet.TbYearTitle);
             return mapBookmark;
         }

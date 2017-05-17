@@ -499,13 +499,6 @@ namespace EstimatesAssembly {
             return n;
         }
 
-        //public void RebuildWorksheets() {
-        //    Workbook mainBook = Ex.ActiveWorkbook;
-        //    foreach (Worksheet worksheet in mainBook.Sheets) {
-        //        string sss = WorkWithExcelLs(worksheet);
-        //    }
-        //}
-
         // Получаем (если нужно) квартал из даты
         private string QuarterFromDate(DateTime value) {
             int a = DateAndTime.DatePart(DateInterval.Quarter, value);

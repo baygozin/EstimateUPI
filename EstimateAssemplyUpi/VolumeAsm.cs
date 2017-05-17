@@ -8,6 +8,7 @@ using Word = Microsoft.Office.Interop.Word;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Reflection;
 using DocumentFormat.OpenXml.Packaging;
+using Microsoft.Office.Core;
 
 namespace EstimatesAssembly {
     // Обработка всех входящих в книгу документов 
@@ -105,8 +106,20 @@ namespace EstimatesAssembly {
                         foreach (Word.Bookmark docBookmark in _docWord.Bookmarks) {
                             // Обработаем все закладки
                             string bmark = docBookmark.Name;
+                            string[] bmaStrings = bmark.Split('_');
                             if (mapBook.ContainsKey(bmark)) {
-                                docBookmark.Range.Text = mapBook[docBookmark.Name];
+                                if (!bmaStrings[0].Contains("подпись")) {
+                                    // если метка не является подписью (картинкой)
+                                    docBookmark.Range.Text = mapBook[docBookmark.Name];
+                                } else { // вставляем картинки
+                                    string fio = "";
+                                    if (bmaStrings[1].Contains("гип")) {
+                                        fio = mapBook["фио_гип"];
+                                    } else if (bmaStrings[1].Contains("руководителя")) {
+                                        fio = mapBook["фио_руководителя"];
+                                    }
+                                    InsertImageSign(docBookmark, fio);
+                                }
                             }
                         }
                     }
@@ -115,6 +128,45 @@ namespace EstimatesAssembly {
             _docWord.Save();
             _docWord.Close();
             _appWord.Quit();
+        }
+
+        // Вставить картинку
+        private void InsertImageSign(Word.Bookmark bookmark, string fio) {
+            try {
+                string fileImage = "";
+                string fName1 = MainFormAsm.iniSet.TxtImagePath + @"\" + ConvertNameIOF(fio).ToUpper() + ".jpg";
+                string fName2 = MainFormAsm.iniSet.TxtImagePath + @"\" + ConvertNameIOF(fio).ToUpper() + ".tif";
+                string fName3 = MainFormAsm.iniSet.TxtImagePath + @"\" + ConvertNameIOF(fio).ToUpper() + ".tiff";
+                if (File.Exists(fName1)) {
+                    fileImage = fName1;
+                } else if (File.Exists(fName2)) {
+                    fileImage = fName2;
+                } else if (File.Exists(fName3)) {
+                    fileImage = fName2;
+                }
+                if (!fileImage.Equals("")) {
+                    var picture = bookmark.Range.InlineShapes.AddPicture(fileImage, false, true);
+                    if (picture != null) {
+                        picture.Height = 50;
+                        picture.Width = 100;
+
+                        picture.PictureFormat.TransparentBackground = MsoTriState.msoTrue;
+                        picture.PictureFormat.TransparencyColor = ColorTranslator.ToOle(Color.White);
+                        picture.Fill.Visible = MsoTriState.msoFalse;
+                        var shape = picture.ConvertToShape();
+                        shape.WrapFormat.Type = Word.WdWrapType.wdWrapFront;
+                    }
+                }
+            } catch (Exception e) {
+                MessageBox.Show(e.Message, @"Ошибка при работе с изображением!");
+            }
+        }
+
+        // Преобразовать Ф И.О. к виду Ф_И_О
+        private static string ConvertNameIOF(string name) {
+            string n = name.Replace(".", "_").Replace(" ", "_");
+            n = n.Substring(0, n.Length);
+            return n;
         }
 
         public void RebuildDocExcel(string file) {
