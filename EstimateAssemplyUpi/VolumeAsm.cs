@@ -10,10 +10,10 @@ using System.Reflection;
 using DocumentFormat.OpenXml.Packaging;
 
 namespace EstimatesAssembly {
+    // Обработка всех входящих в книгу документов 
     public class VolumeAsm {
 
-        Dictionary<string, string> fields = new Dictionary<string, string>();
-
+        Dictionary<string, string> mapBook = new Dictionary<string, string>();
         public Word._Application _appWord;
         public Word._Document _docWord;
         public Excel._Application _appExcel;
@@ -30,6 +30,10 @@ namespace EstimatesAssembly {
         private string propertyWordDocPz = "пояснительная записка";
 
         public VolumeAsm() {
+        }
+
+        public void setMapBookmarks(Dictionary<string, string> dict) {
+            mapBook = dict;
         }
 
         public void reReadListFile(ListViewWithReordering listView, string folder) {
@@ -98,16 +102,17 @@ namespace EstimatesAssembly {
                 string[] prop = propValue.Split(' ');
                 if (prop[0].Equals("шаблон")) {
                     if (prop[1].Equals("титул")) {
-                        string spisok = "";
-                        foreach (Word.Bookmark documentBookmark in _docWord.Bookmarks) {
-                            //documentBookmark.Range.Text = "";
+                        foreach (Word.Bookmark docBookmark in _docWord.Bookmarks) {
                             // Обработаем все закладки
-                            spisok = spisok + documentBookmark.Name + "\n\r";
+                            string bmark = docBookmark.Name;
+                            if (mapBook.ContainsKey(bmark)) {
+                                docBookmark.Range.Text = mapBook[docBookmark.Name];
+                            }
                         }
-                        MessageBox.Show(spisok, "=============");
                     }
                 }
             }
+            _docWord.Save();
             _docWord.Close();
             _appWord.Quit();
         }

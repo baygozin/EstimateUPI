@@ -16,44 +16,50 @@ namespace EstimatesAssembly {
         private BookEstimates _book;
         private VolumeAsm _volumeAsm;
         private readonly string _configfile;
+        private initBookmark InitBookmark = new initBookmark();
         private readonly ListViewColumnSorter _lvwColumnSorter = new ListViewColumnSorter();
         public static Config iniSet = new Config();
-
+        public Dictionary<string, string> mapBookmak = new Dictionary<string, string>();
 
         Object missingObj = System.Reflection.Missing.Value;
 
         public MainFormAsm() {
-
             InitializeComponent();
             _book = new BookEstimates();
             _volumeAsm = new VolumeAsm();
             _configfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\estimate.xml";
             _book.PgBar = pgBar;
             this.lstSheet.ListViewItemSorter = _lvwColumnSorter;
+            // перехватчики глобальных исключений
             AppDomain.CurrentDomain.UnhandledException += delegate (object sender, UnhandledExceptionEventArgs args)
             {
-                if (_book != null) {
-                    _book.Ex.Application.Quit();
-                }
-                if (_volumeAsm != null) {
-                    
-                }
+                allQuit();
                 Trace.WriteLine("Global exception: " + args.ExceptionObject.ToString());
             };
             Application.ThreadException += delegate (Object sender, ThreadExceptionEventArgs args)
             {
-                if (_book != null) {
-                    _book.Ex.Application.Quit();
-                }
-                if (_volumeAsm != null) {
-
-                }
+                allQuit();
                 Trace.WriteLine("Global exception: " + args.Exception.ToString());
                 Environment.Exit(0);
             };
 
         }
 
+        public void allQuit() {
+            if (_book != null) {
+                if (_book.Ex != null) {
+                    _book.Ex.Application.Quit();
+                }
+            }
+            if (_volumeAsm != null) {
+                if (_volumeAsm._appExcel != null) {
+                    _volumeAsm._appExcel.Quit();
+                }
+                if (_volumeAsm._appWord != null) {
+                    _volumeAsm._appWord.Quit();
+                }
+            }
+        }
         // Добавить ГИПа в список
         private void btnGip_Click(object sender, EventArgs e) {
             if (!cbGip.Items.Contains(cbGip.Text)) {
@@ -127,8 +133,6 @@ namespace EstimatesAssembly {
             iniSet.TbNameObject = tbNameObject.Text;
             iniSet.TbCodeObject = tbCodeObject.Text;
             iniSet.NumVolumeNumber = numVolumeNumber.Text;
-            iniSet.NumBookNumber = numBookNumber.Text;
-            iniSet.NumPartNumber = numPartNumber.Text;
             iniSet.TbInventoryNumber = tbInventoryNumber.Text;
             iniSet.CbStageDevelope = cbStageDevelope.Text;
             iniSet.TbChiefEngineer = tbChiefEngineer.Text;
@@ -154,6 +158,14 @@ namespace EstimatesAssembly {
             iniSet.TbCertificate = tbCertificate.Text;
             iniSet.TbYearTitle = tbYearTitul.Text;
             iniSet.TbWorkFolder = tbWorkFolder.Text;
+
+            iniSet.TbGenCreator = tbGenCreator.Text;
+            iniSet.TbChiefPsition = tbChiefPosition.Text;
+            iniSet.TbChiefFio = tbChiefFio.Text;
+            iniSet.TbGipFiol = tbGipFio.Text;
+            iniSet.TbSectionNumber = tbSectionNumber.Text;
+            iniSet.TbVolCount = tbVolCount.Text;
+
             using (Stream writer = new FileStream(_configfile, FileMode.Create)) {
                 var serializer = new XmlSerializer(typeof(Config));
                 serializer.Serialize(writer, iniSet);
@@ -173,8 +185,6 @@ namespace EstimatesAssembly {
                     tbNameObject.Text = iniSet.TbNameObject;
                     tbCodeObject.Text = iniSet.TbCodeObject;
                     numVolumeNumber.Text = iniSet.NumVolumeNumber;
-                    numBookNumber.Text = iniSet.NumBookNumber;
-                    numPartNumber.Text = iniSet.NumPartNumber;
                     tbInventoryNumber.Text = iniSet.TbInventoryNumber;
                     cbStageDevelope.Text = iniSet.CbStageDevelope;
                     tbChiefEngineer.Text = iniSet.TbChiefEngineer;
@@ -202,6 +212,15 @@ namespace EstimatesAssembly {
                     tbCertificate.Text = iniSet.TbCertificate;
                     tbYearTitul.Text = iniSet.TbYearTitle;
                     tbWorkFolder.Text = iniSet.TbWorkFolder;
+                    tbGenCreator.Text = iniSet.TbGenCreator;
+                    tbChiefPosition.Text = iniSet.TbChiefPsition;
+                    tbChiefFio.Text = iniSet.TbChiefFio;
+                    tbGipFio.Text = iniSet.TbGipFiol;
+                    tbSectionNumber.Text = iniSet.TbSectionNumber;
+                    tbVolCount.Text = iniSet.TbVolCount;
+
+                    mapBookmak = InitBookmark.fillBookmark();
+                    
                 }
             }
         }
@@ -213,8 +232,7 @@ namespace EstimatesAssembly {
 
         // Изменение наименование книги
         private void ChangeNameBook() {
-            _book.NameBook = @"Том-" + numVolumeNumber.Text + "-" + numBookNumber.Text
-               + "-" + numPartNumber.Text;
+            _book.NameBook = @"Том-" + numVolumeNumber.Text + "-" + numVolumeNumber.Text;
             _book.PathBook = txtEsimatePath.Text + "\\";
         }
 
@@ -412,6 +430,7 @@ namespace EstimatesAssembly {
                 MessageBox.Show(@"Ни одного файла не выбрано!", @"Внимание!");
                 return;
             }
+            _volumeAsm.setMapBookmarks(mapBookmak);
             foreach (ListViewItem selectedItem in listViewWithReordering.SelectedItems) {
                 string file = tbWorkFolder.Text + @"\" + selectedItem.Text;
                 if (File.Exists(file)) {

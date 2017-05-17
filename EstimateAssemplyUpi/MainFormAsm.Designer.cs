@@ -99,19 +99,14 @@
             this.tbGenCreator = new System.Windows.Forms.TextBox();
             this.label22 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.tbPositionChief = new System.Windows.Forms.TextBox();
+            this.tbChiefPosition = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
-            this.tbFioChief = new System.Windows.Forms.TextBox();
+            this.tbChiefFio = new System.Windows.Forms.TextBox();
             this.label18 = new System.Windows.Forms.Label();
-            this.tbFioGip = new System.Windows.Forms.TextBox();
+            this.tbGipFio = new System.Windows.Forms.TextBox();
             this.tbInventoryNumber = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
-            this.numPartNumber = new System.Windows.Forms.NumericUpDown();
-            this.numBookNumber = new System.Windows.Forms.NumericUpDown();
-            this.numVolumeNumber = new System.Windows.Forms.NumericUpDown();
             this.cbTypeDocumentation = new System.Windows.Forms.ComboBox();
             this.label12 = new System.Windows.Forms.Label();
             this.cbStageDevelope = new System.Windows.Forms.ComboBox();
@@ -130,6 +125,11 @@
             this.label30 = new System.Windows.Forms.Label();
             this.dateToStamp = new System.Windows.Forms.DateTimePicker();
             this.label19 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.tbSectionNumber = new System.Windows.Forms.TextBox();
+            this.numVolumeNumber = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.tbVolCount = new System.Windows.Forms.TextBox();
             this.ctxMenuFileList.SuspendLayout();
             this.tabPageEstimate.SuspendLayout();
             this.tabControl2.SuspendLayout();
@@ -143,9 +143,6 @@
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numPartNumber)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numBookNumber)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numVolumeNumber)).BeginInit();
             this.SuspendLayout();
             // 
             // ctxMenuFileList
@@ -334,7 +331,7 @@
             // 
             this.pgBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pgBar.Location = new System.Drawing.Point(6, 540);
+            this.pgBar.Location = new System.Drawing.Point(6, 537);
             this.pgBar.Name = "pgBar";
             this.pgBar.Size = new System.Drawing.Size(756, 13);
             this.pgBar.Step = 1;
@@ -858,15 +855,15 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.tbVolCount);
+            this.tabPage2.Controls.Add(this.label16);
+            this.tabPage2.Controls.Add(this.numVolumeNumber);
+            this.tabPage2.Controls.Add(this.tbSectionNumber);
+            this.tabPage2.Controls.Add(this.label3);
             this.tabPage2.Controls.Add(this.groupBox2);
             this.tabPage2.Controls.Add(this.tbInventoryNumber);
             this.tabPage2.Controls.Add(this.label21);
-            this.tabPage2.Controls.Add(this.label17);
-            this.tabPage2.Controls.Add(this.label16);
             this.tabPage2.Controls.Add(this.label15);
-            this.tabPage2.Controls.Add(this.numPartNumber);
-            this.tabPage2.Controls.Add(this.numBookNumber);
-            this.tabPage2.Controls.Add(this.numVolumeNumber);
             this.tabPage2.Controls.Add(this.cbTypeDocumentation);
             this.tabPage2.Controls.Add(this.label12);
             this.tabPage2.Controls.Add(this.cbStageDevelope);
@@ -898,11 +895,11 @@
             this.groupBox2.Controls.Add(this.tbGenCreator);
             this.groupBox2.Controls.Add(this.label22);
             this.groupBox2.Controls.Add(this.label13);
-            this.groupBox2.Controls.Add(this.tbPositionChief);
+            this.groupBox2.Controls.Add(this.tbChiefPosition);
             this.groupBox2.Controls.Add(this.label14);
-            this.groupBox2.Controls.Add(this.tbFioChief);
+            this.groupBox2.Controls.Add(this.tbChiefFio);
             this.groupBox2.Controls.Add(this.label18);
-            this.groupBox2.Controls.Add(this.tbFioGip);
+            this.groupBox2.Controls.Add(this.tbGipFio);
             this.groupBox2.Location = new System.Drawing.Point(480, 13);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(466, 228);
@@ -936,12 +933,13 @@
             this.label13.TabIndex = 90;
             this.label13.Text = "Должность руководителя";
             // 
-            // tbPositionChief
+            // tbChiefPosition
             // 
-            this.tbPositionChief.Location = new System.Drawing.Point(9, 96);
-            this.tbPositionChief.Name = "tbPositionChief";
-            this.tbPositionChief.Size = new System.Drawing.Size(451, 24);
-            this.tbPositionChief.TabIndex = 91;
+            this.tbChiefPosition.Location = new System.Drawing.Point(9, 96);
+            this.tbChiefPosition.Name = "tbChiefPosition";
+            this.tbChiefPosition.Size = new System.Drawing.Size(451, 24);
+            this.tbChiefPosition.TabIndex = 91;
+            this.tbChiefPosition.Text = "Должность руководителя";
             // 
             // label14
             // 
@@ -952,12 +950,13 @@
             this.label14.TabIndex = 92;
             this.label14.Text = "ФИО руководителя";
             // 
-            // tbFioChief
+            // tbChiefFio
             // 
-            this.tbFioChief.Location = new System.Drawing.Point(9, 142);
-            this.tbFioChief.Name = "tbFioChief";
-            this.tbFioChief.Size = new System.Drawing.Size(451, 24);
-            this.tbFioChief.TabIndex = 93;
+            this.tbChiefFio.Location = new System.Drawing.Point(9, 142);
+            this.tbChiefFio.Name = "tbChiefFio";
+            this.tbChiefFio.Size = new System.Drawing.Size(451, 24);
+            this.tbChiefFio.TabIndex = 93;
+            this.tbChiefFio.Text = "ФИО руководителя";
             // 
             // label18
             // 
@@ -968,12 +967,13 @@
             this.label18.TabIndex = 94;
             this.label18.Text = "ФИО Главного инженера проекта";
             // 
-            // tbFioGip
+            // tbGipFio
             // 
-            this.tbFioGip.Location = new System.Drawing.Point(9, 189);
-            this.tbFioGip.Name = "tbFioGip";
-            this.tbFioGip.Size = new System.Drawing.Size(451, 24);
-            this.tbFioGip.TabIndex = 95;
+            this.tbGipFio.Location = new System.Drawing.Point(9, 189);
+            this.tbGipFio.Name = "tbGipFio";
+            this.tbGipFio.Size = new System.Drawing.Size(451, 24);
+            this.tbGipFio.TabIndex = 95;
+            this.tbGipFio.Text = "ФИО ГИП";
             // 
             // tbInventoryNumber
             // 
@@ -986,29 +986,11 @@
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(7, 318);
+            this.label21.Location = new System.Drawing.Point(6, 318);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(116, 17);
             this.label21.TabIndex = 108;
             this.label21.Text = "Инвентарный №";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(113, 271);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(46, 17);
-            this.label17.TabIndex = 107;
-            this.label17.Text = "Часть";
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(60, 271);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(45, 17);
-            this.label16.TabIndex = 106;
-            this.label16.Text = "Книга";
             // 
             // label15
             // 
@@ -1018,37 +1000,6 @@
             this.label15.Size = new System.Drawing.Size(33, 17);
             this.label15.TabIndex = 105;
             this.label15.Text = "Том";
-            // 
-            // numPartNumber
-            // 
-            this.numPartNumber.Location = new System.Drawing.Point(116, 291);
-            this.numPartNumber.Name = "numPartNumber";
-            this.numPartNumber.Size = new System.Drawing.Size(47, 24);
-            this.numPartNumber.TabIndex = 99;
-            // 
-            // numBookNumber
-            // 
-            this.numBookNumber.Location = new System.Drawing.Point(63, 291);
-            this.numBookNumber.Name = "numBookNumber";
-            this.numBookNumber.Size = new System.Drawing.Size(47, 24);
-            this.numBookNumber.TabIndex = 98;
-            this.numBookNumber.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-            // 
-            // numVolumeNumber
-            // 
-            this.numVolumeNumber.Location = new System.Drawing.Point(10, 291);
-            this.numVolumeNumber.Name = "numVolumeNumber";
-            this.numVolumeNumber.Size = new System.Drawing.Size(47, 24);
-            this.numVolumeNumber.TabIndex = 97;
-            this.numVolumeNumber.Value = new decimal(new int[] {
-            9,
-            0,
-            0,
-            0});
             // 
             // cbTypeDocumentation
             // 
@@ -1061,16 +1012,16 @@
             "Смета на строительство объектов капитального строительства",
             "Ведомость объемов работ",
             "Объектные и локальные сметы"});
-            this.cbTypeDocumentation.Location = new System.Drawing.Point(169, 291);
+            this.cbTypeDocumentation.Location = new System.Drawing.Point(489, 338);
             this.cbTypeDocumentation.Name = "cbTypeDocumentation";
-            this.cbTypeDocumentation.Size = new System.Drawing.Size(310, 24);
+            this.cbTypeDocumentation.Size = new System.Drawing.Size(300, 24);
             this.cbTypeDocumentation.TabIndex = 100;
             this.cbTypeDocumentation.Text = "Объектные и локальные сметы";
             // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(166, 271);
+            this.label12.Location = new System.Drawing.Point(486, 318);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(130, 17);
             this.label12.TabIndex = 104;
@@ -1082,16 +1033,16 @@
             this.cbStageDevelope.Items.AddRange(new object[] {
             "Рабочая документация",
             "Проектная документация"});
-            this.cbStageDevelope.Location = new System.Drawing.Point(169, 338);
+            this.cbStageDevelope.Location = new System.Drawing.Point(489, 388);
             this.cbStageDevelope.Name = "cbStageDevelope";
-            this.cbStageDevelope.Size = new System.Drawing.Size(310, 24);
+            this.cbStageDevelope.Size = new System.Drawing.Size(300, 24);
             this.cbStageDevelope.TabIndex = 102;
             this.cbStageDevelope.Text = "Проектная документация";
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(166, 318);
+            this.label11.Location = new System.Drawing.Point(486, 368);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(134, 17);
             this.label11.TabIndex = 103;
@@ -1111,7 +1062,7 @@
             this.tbNameObject.Location = new System.Drawing.Point(10, 85);
             this.tbNameObject.Multiline = true;
             this.tbNameObject.Name = "tbNameObject";
-            this.tbNameObject.Size = new System.Drawing.Size(463, 33);
+            this.tbNameObject.Size = new System.Drawing.Size(459, 33);
             this.tbNameObject.TabIndex = 88;
             this.tbNameObject.Text = "Наименование объекта";
             // 
@@ -1137,7 +1088,7 @@
             // 
             this.tbCodeObject.Location = new System.Drawing.Point(10, 141);
             this.tbCodeObject.Name = "tbCodeObject";
-            this.tbCodeObject.Size = new System.Drawing.Size(463, 24);
+            this.tbCodeObject.Size = new System.Drawing.Size(459, 24);
             this.tbCodeObject.TabIndex = 84;
             this.tbCodeObject.Text = "Шифр объекта";
             // 
@@ -1154,7 +1105,7 @@
             // 
             this.tbCertificate.Location = new System.Drawing.Point(10, 244);
             this.tbCertificate.Name = "tbCertificate";
-            this.tbCertificate.Size = new System.Drawing.Size(463, 24);
+            this.tbCertificate.Size = new System.Drawing.Size(459, 24);
             this.tbCertificate.TabIndex = 83;
             this.tbCertificate.Text = "Свидетельство";
             // 
@@ -1172,7 +1123,7 @@
             this.tbCustomer.Location = new System.Drawing.Point(10, 188);
             this.tbCustomer.Multiline = true;
             this.tbCustomer.Name = "tbCustomer";
-            this.tbCustomer.Size = new System.Drawing.Size(463, 33);
+            this.tbCustomer.Size = new System.Drawing.Size(459, 33);
             this.tbCustomer.TabIndex = 81;
             this.tbCustomer.Text = "Заказчик";
             // 
@@ -1187,7 +1138,7 @@
             // 
             // tbYearTitul
             // 
-            this.tbYearTitul.Location = new System.Drawing.Point(10, 385);
+            this.tbYearTitul.Location = new System.Drawing.Point(259, 291);
             this.tbYearTitul.Name = "tbYearTitul";
             this.tbYearTitul.Size = new System.Drawing.Size(100, 24);
             this.tbYearTitul.TabIndex = 79;
@@ -1195,7 +1146,7 @@
             // label30
             // 
             this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(7, 365);
+            this.label30.Location = new System.Drawing.Point(256, 271);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(134, 17);
             this.label30.TabIndex = 78;
@@ -1203,7 +1154,7 @@
             // 
             // dateToStamp
             // 
-            this.dateToStamp.Location = new System.Drawing.Point(169, 385);
+            this.dateToStamp.Location = new System.Drawing.Point(199, 338);
             this.dateToStamp.Name = "dateToStamp";
             this.dateToStamp.Size = new System.Drawing.Size(160, 24);
             this.dateToStamp.TabIndex = 76;
@@ -1211,11 +1162,52 @@
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(166, 365);
+            this.label19.Location = new System.Drawing.Point(196, 318);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(97, 17);
             this.label19.TabIndex = 77;
             this.label19.Text = "Дата в штамп";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(486, 244);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(104, 17);
+            this.label3.TabIndex = 110;
+            this.label3.Text = "Номер раздела";
+            // 
+            // tbSectionNumber
+            // 
+            this.tbSectionNumber.Location = new System.Drawing.Point(489, 264);
+            this.tbSectionNumber.Multiline = true;
+            this.tbSectionNumber.Name = "tbSectionNumber";
+            this.tbSectionNumber.Size = new System.Drawing.Size(451, 41);
+            this.tbSectionNumber.TabIndex = 111;
+            this.tbSectionNumber.Text = "Номер раздела";
+            // 
+            // numVolumeNumber
+            // 
+            this.numVolumeNumber.Location = new System.Drawing.Point(10, 291);
+            this.numVolumeNumber.Name = "numVolumeNumber";
+            this.numVolumeNumber.Size = new System.Drawing.Size(100, 24);
+            this.numVolumeNumber.TabIndex = 112;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(131, 271);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(88, 17);
+            this.label16.TabIndex = 113;
+            this.label16.Text = "Всего томов";
+            // 
+            // tbVolCount
+            // 
+            this.tbVolCount.Location = new System.Drawing.Point(134, 291);
+            this.tbVolCount.Name = "tbVolCount";
+            this.tbVolCount.Size = new System.Drawing.Size(100, 24);
+            this.tbVolCount.TabIndex = 114;
             // 
             // MainFormAsm
             // 
@@ -1252,9 +1244,6 @@
             this.tabPage2.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numPartNumber)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numBookNumber)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numVolumeNumber)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1342,19 +1331,14 @@
         private System.Windows.Forms.TextBox tbGenCreator;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.TextBox tbPositionChief;
+        private System.Windows.Forms.TextBox tbChiefPosition;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.TextBox tbFioChief;
+        private System.Windows.Forms.TextBox tbChiefFio;
         private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.TextBox tbFioGip;
+        private System.Windows.Forms.TextBox tbGipFio;
         private System.Windows.Forms.TextBox tbInventoryNumber;
         private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.NumericUpDown numPartNumber;
-        private System.Windows.Forms.NumericUpDown numBookNumber;
-        private System.Windows.Forms.NumericUpDown numVolumeNumber;
         private System.Windows.Forms.ComboBox cbTypeDocumentation;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.ComboBox cbStageDevelope;
@@ -1365,6 +1349,11 @@
         private System.Windows.Forms.CheckBox chbSave;
         private System.Windows.Forms.CheckBox chbNumeric;
         private System.Windows.Forms.CheckBox chbSort;
+        private System.Windows.Forms.TextBox tbSectionNumber;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox numVolumeNumber;
+        private System.Windows.Forms.TextBox tbVolCount;
+        private System.Windows.Forms.Label label16;
     }
 }
 

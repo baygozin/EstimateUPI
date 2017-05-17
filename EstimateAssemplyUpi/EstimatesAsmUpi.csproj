@@ -138,6 +138,7 @@
   <ItemGroup>
     <Compile Include="BookEstimates.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="initBookmark.cs" />
     <Compile Include="ListViewColumnSorter.cs" />
     <Compile Include="ListViewWithReordering.cs">
       <SubType>Component</SubType>

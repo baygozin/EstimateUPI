@@ -59,7 +59,12 @@ namespace EstimatesAssembly {
         public string TbYearTitle;
         // Переменные для сборки книги
         public string TbWorkFolder;
-
+        public string TbGenCreator;
+        public string TbChiefPsition;
+        public string TbChiefFio;
+        public string TbGipFiol;
+        public string TbSectionNumber;
+        public string TbVolCount;
     }
 
 }
