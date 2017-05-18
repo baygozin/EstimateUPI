@@ -608,13 +608,13 @@ namespace EstimatesAssembly {
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignLeft;
                 // Вставим картинки
                 if (MainFormAsm.iniSet.CbInsertSignSS) {
-                    if (!MainFormAsm.iniSet.CbGip.Equals("")) {
+                    if (!MainFormAsm.iniSet.TbGipMain.Equals("")) {
                         InsertImage(ref sheet, rowGip, 5, MainFormAsm.iniSet.CbGipText);
                     }
                     if (!MainFormAsm.iniSet.TbHeadDepartment.Equals("")) {
                         InsertImage(ref sheet, rowBoss, 5, MainFormAsm.iniSet.TbHeadDepartment);
                     }
-                    if (!MainFormAsm.iniSet.CbMadeIn.Equals("")) {
+                    if (!MainFormAsm.iniSet.TbBuilderMain.Equals("")) {
                         InsertImage(ref sheet, rowMadeIn, 5, MainFormAsm.iniSet.CbMadeInText);
                     }
                 }
@@ -895,7 +895,7 @@ namespace EstimatesAssembly {
                 rangeWork = sheet.Cells[rowBoss, "D"];
                 rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.TbHeadDepartment;
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                if (!MainFormAsm.iniSet.CbGip.Equals("")) {
+                if (!MainFormAsm.iniSet.TbGipMain.Equals("")) {
                     InsertImage(ref sheet, rowGip, 5, MainFormAsm.iniSet.CbGipText);
                 }
                 if (!MainFormAsm.iniSet.TbHeadDepartment.Equals("")) {
@@ -942,11 +942,7 @@ namespace EstimatesAssembly {
         private string WorkWithExcelR(Worksheet sheet) {
             // Это наименование работ и т.д. ===============================================
             Range rangeWork = sheet.Range["A1"];
-            if (MainFormAsm.iniSet.RbRes6) {
-                rangeWork = sheet.Range[MainFormAsm.iniSet.tbRname6, MainFormAsm.iniSet.tbRname6];
-            } else if (MainFormAsm.iniSet.RbRes7) {
-                rangeWork = sheet.Range[MainFormAsm.iniSet.tbRname7, MainFormAsm.iniSet.tbRname7];
-            }
+            rangeWork = sheet.Range["C8", "C8"];
             string nameWorks = RenameName(rangeWork.Value2);
             if (rangeWork.Value2 != null) {
                 string sss = rangeWork.Value2.ToString();

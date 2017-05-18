@@ -60,33 +60,6 @@ namespace EstimatesAssembly {
                 }
             }
         }
-        // Добавить ГИПа в список
-        private void btnGip_Click(object sender, EventArgs e) {
-            if (!cbGip.Items.Contains(cbGip.Text)) {
-                cbGip.Items.Add(cbGip.Text);
-                SaveConfig();
-            }
-        }
-
-        // Добавить составителя в список
-        private void btnMadeIn_Click(object sender, EventArgs e) {
-            if (!cbMadeIn.Items.Contains(cbMadeIn.Text)) {
-                cbMadeIn.Items.Add(cbMadeIn.Text);
-                SaveConfig();
-            }
-        }
-
-        // Удалить ГИПа из списка
-        private void btnGipDelete_Click(object sender, EventArgs e) {
-            cbGip.Items.Remove(cbGip.Text);
-            SaveConfig();
-        }
-
-        // Удалить составителя из списка
-        private void btnMadeInDelete_Click(object sender, EventArgs e) {
-            cbMadeIn.Items.Remove(cbMadeIn.Text);
-            SaveConfig();
-        }
 
         // Задать папку для вывода результата сборки
         private void btnEstimatePathAndName_Click(object sender, EventArgs e) {
@@ -114,6 +87,7 @@ namespace EstimatesAssembly {
         // Загрузка главной формы
         private void MainFormAsm_Load(object sender, EventArgs e) {
             ReadConfig(); // читаем настройки
+            mapBookmak = InitBookmark.fillBookmark();
             ChangeNameBook(); // задаем название книги
             ListRefresh();
             // создаем временный шаблон оглавления
@@ -128,15 +102,16 @@ namespace EstimatesAssembly {
         private void SaveConfig() {
             iniSet.TxtEsimatePath = txtEsimatePath.Text;
             iniSet.TxtImagePath = txtImagePath.Text;
-            iniSet.ListTypeDocument = cbTypeDocumentation.Text;
             iniSet.TbNameBuilding = tbNameBuilding.Text;
             iniSet.TbNameObject = tbNameObject.Text;
             iniSet.TbCodeObject = tbCodeObject.Text;
             iniSet.NumVolumeNumber = numVolumeNumber.Text;
             iniSet.TbInventoryNumber = tbInventoryNumber.Text;
             iniSet.CbStageDevelope = cbStageDevelope.Text;
-            iniSet.TbChiefEngineer = tbChiefEngineer.Text;
-            iniSet.TbHeadDepartment = tbHeadDepartment.Text;
+            iniSet.TbGipMain = tbGipMain.Text;
+            iniSet.TbBuilderMain = tbBuilderMain.Text;
+            iniSet.TbChiefEngineer = tbChiefEngineerMain.Text;
+            iniSet.TbHeadDepartment = tbHeadDepartmentMain.Text;
             iniSet.DateToStamp = dateToStamp.Value;
             iniSet.CbPriceLevelL = cbPriceLevelL.Value;
             iniSet.CbPriceLevelO = cbPriceLevelO.Value;
@@ -145,12 +120,6 @@ namespace EstimatesAssembly {
             iniSet.CbInsertSignLE = cbInsertSignLE.Checked;
             iniSet.CbInsertSignSS = cbInsertSignSS.Checked;
             iniSet.CbInsertSignLR = cbInsertSignLR.Checked;
-            iniSet.CbGip = new string[cbGip.Items.Count];
-            cbGip.Items.CopyTo(iniSet.CbGip, 0);
-            iniSet.CbMadeIn = new string[cbMadeIn.Items.Count];
-            cbMadeIn.Items.CopyTo(iniSet.CbMadeIn, 0);
-            iniSet.CbGipText = cbGip.Text;
-            iniSet.CbMadeInText = cbMadeIn.Text;
             iniSet.CbSort = chbSort.Checked;
             iniSet.CbNumeric = chbNumeric.Checked;
             iniSet.CbSave = chbSave.Checked;
@@ -159,10 +128,9 @@ namespace EstimatesAssembly {
             iniSet.TbYearTitle = tbYearTitul.Text;
             iniSet.TbWorkFolder = tbWorkFolder.Text;
 
-            iniSet.TbGenCreator = tbGenCreator.Text;
             iniSet.TbChiefPsition = tbChiefPosition.Text;
             iniSet.TbChiefFio = tbChiefFio.Text;
-            iniSet.TbGipFiol = tbGipFio.Text;
+            iniSet.TbGipFio = tbGipFio.Text;
             iniSet.TbSectionNumber = tbSectionNumber.Text;
             iniSet.TbVolCount = tbVolCount.Text;
 
@@ -180,15 +148,14 @@ namespace EstimatesAssembly {
                     iniSet = (Config)serializer.Deserialize(stream);
                     txtEsimatePath.Text = iniSet.TxtEsimatePath;
                     txtImagePath.Text = iniSet.TxtImagePath;
-                    cbTypeDocumentation.Text = iniSet.ListTypeDocument;
                     tbNameBuilding.Text = iniSet.TbNameBuilding;
                     tbNameObject.Text = iniSet.TbNameObject;
                     tbCodeObject.Text = iniSet.TbCodeObject;
                     numVolumeNumber.Text = iniSet.NumVolumeNumber;
                     tbInventoryNumber.Text = iniSet.TbInventoryNumber;
                     cbStageDevelope.Text = iniSet.CbStageDevelope;
-                    tbChiefEngineer.Text = iniSet.TbChiefEngineer;
-                    tbHeadDepartment.Text = iniSet.TbHeadDepartment;
+                    tbChiefEngineerMain.Text = iniSet.TbChiefEngineer;
+                    tbHeadDepartmentMain.Text = iniSet.TbHeadDepartment;
                     dateToStamp.Value = iniSet.DateToStamp;
                     cbPriceLevelL.Value = iniSet.CbPriceLevelL;
                     cbPriceLevelO.Value = iniSet.CbPriceLevelO;
@@ -197,14 +164,6 @@ namespace EstimatesAssembly {
                     cbInsertSignLE.Checked = iniSet.CbInsertSignLE;
                     cbInsertSignSS.Checked = iniSet.CbInsertSignSS;
                     cbInsertSignLR.Checked = iniSet.CbInsertSignLR;
-                    if (iniSet.CbGip != null) {
-                        cbGip.Items.AddRange(iniSet.CbGip);
-                        cbGip.Text = iniSet.CbGipText;
-                    }
-                    if (iniSet.CbMadeIn != null) {
-                        cbMadeIn.Items.AddRange(iniSet.CbMadeIn);
-                        cbMadeIn.Text = iniSet.CbMadeInText;
-                    }
                     chbSort.Checked = iniSet.CbSort;
                     chbNumeric.Checked = iniSet.CbNumeric;
                     chbSave.Checked = iniSet.CbSave;
@@ -212,15 +171,11 @@ namespace EstimatesAssembly {
                     tbCertificate.Text = iniSet.TbCertificate;
                     tbYearTitul.Text = iniSet.TbYearTitle;
                     tbWorkFolder.Text = iniSet.TbWorkFolder;
-                    tbGenCreator.Text = iniSet.TbGenCreator;
                     tbChiefPosition.Text = iniSet.TbChiefPsition;
                     tbChiefFio.Text = iniSet.TbChiefFio;
-                    tbGipFio.Text = iniSet.TbGipFiol;
+                    tbGipFio.Text = iniSet.TbGipFio;
                     tbSectionNumber.Text = iniSet.TbSectionNumber;
                     tbVolCount.Text = iniSet.TbVolCount;
-
-                    mapBookmak = InitBookmark.fillBookmark();
-                    
                 }
             }
         }
