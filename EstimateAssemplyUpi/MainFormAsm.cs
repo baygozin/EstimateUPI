@@ -133,7 +133,7 @@ namespace EstimatesAssembly {
             iniSet.TbGipFio = tbGipFio.Text;
             iniSet.TbSectionNumber = tbSectionNumber.Text;
             iniSet.TbVolCount = tbVolCount.Text;
-
+            iniSet.NumberFirstPage = numberFirstPage.Text;
             using (Stream writer = new FileStream(_configfile, FileMode.Create)) {
                 var serializer = new XmlSerializer(typeof(Config));
                 serializer.Serialize(writer, iniSet);
@@ -176,6 +176,7 @@ namespace EstimatesAssembly {
                     tbGipFio.Text = iniSet.TbGipFio;
                     tbSectionNumber.Text = iniSet.TbSectionNumber;
                     tbVolCount.Text = iniSet.TbVolCount;
+                    numberFirstPage.Text = iniSet.NumberFirstPage;
                 }
             }
         }

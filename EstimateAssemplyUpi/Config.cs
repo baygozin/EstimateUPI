@@ -49,6 +49,7 @@ namespace EstimatesAssembly {
         public string TbGipFio;
         public string TbSectionNumber;
         public string TbVolCount;
+        public string NumberFirstPage;
     }
 
 }

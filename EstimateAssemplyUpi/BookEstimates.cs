@@ -21,6 +21,7 @@ using Workbook = Microsoft.Office.Interop.Excel.Workbook;
 using Worksheet = Microsoft.Office.Interop.Excel.Worksheet;
 using XlHAlign = Microsoft.Office.Interop.Excel.XlHAlign;
 using PrinterSettings = System.Drawing.Printing.PrinterSettings;
+using XlBorderWeight = Microsoft.Office.Interop.Word.XlBorderWeight;
 
 namespace EstimatesAssembly {
     class BookEstimates {
@@ -28,7 +29,13 @@ namespace EstimatesAssembly {
         private const int PixelH = 50;
         private string propertyDocName = "Comments";
         private string propertyDocValue = "собранная книга со сметами";
+        private string nameContent = "Оглавление";
         private ProgressBar _pgBar;
+
+        struct Ogl {
+            public string col1;
+            public string col2;
+        }
 
         public ProgressBar PgBar {
             get { return _pgBar; }
@@ -128,7 +135,6 @@ namespace EstimatesAssembly {
                 TmpWb.Close();
             }
             _pgBar.Value = 0;
-
             foreach (string myvar in GetListSheet()) {
                 if (myvar.Contains("Лист")) {
                     Wb.Sheets[myvar].Delete();
@@ -413,6 +419,7 @@ namespace EstimatesAssembly {
 
         // перенумерация страниц
         public void NumberingPage() {
+            DateTime dateTime = DateTime.Now;
             Workbook mainBook = Ex.ActiveWorkbook;
             if (mainBook == null) {
                 return;
@@ -420,10 +427,19 @@ namespace EstimatesAssembly {
             foreach (Worksheet worksheet in mainBook.Sheets) {
                 if (worksheet.Name.Contains(@"Лист")) worksheet.Delete();
             }
+            // Добавить страницу оглавления
+            Worksheet ogl = mainBook.Sheets.Add(Before: mainBook.Sheets[1]);
+            ogl.Columns["B:B"].ColumnWidth = 18;
+            ogl.Columns["C:C"].ColumnWidth = 40;
+            ((Range) ogl.Columns["C:C"]).Cells.WrapText = true;
+            ogl.Name = nameContent;
             // Включим разрывы страниц
             _pgBar.Maximum = mainBook.Sheets.Count;
             foreach (Worksheet worksheet in mainBook.Sheets) {
                 _pgBar.Value += 1;
+                if (worksheet.Name.Equals(nameContent)) {
+                    continue;
+                }
                 worksheet.PageSetup.Orientation = XlPageOrientation.xlLandscape;
                 worksheet.PageSetup.Zoom = false;
                 worksheet.PageSetup.FitToPagesWide = 1;
@@ -440,11 +456,16 @@ namespace EstimatesAssembly {
                 Ex.ActiveWindow.View = XlWindowView.xlPageBreakPreview;
             }
             _pgBar.Value = 0;
-
-            int x = 1;
+            int iii = 0;
+            Ogl a = new Ogl();
+            int x = int.Parse(MainFormAsm.iniSet.NumberFirstPage); // С чего начинается счет...
             _pgBar.Maximum = mainBook.Sheets.Count;
             foreach (Worksheet worksheet in mainBook.Sheets) {
                 _pgBar.Value += 1;
+                iii += 1;
+                if (worksheet.Name.Equals(nameContent)) {
+                    continue;
+                }
                 worksheet.Select();
                 Ex.ActiveWindow.View = XlWindowView.xlPageBreakPreview;
                 worksheet.PageSetup.RightFooter = "&P";
@@ -452,13 +473,61 @@ namespace EstimatesAssembly {
                 worksheet.PageSetup.CenterHeader = " ";
                 worksheet.PageSetup.RightHeader = " ";
                 worksheet.PageSetup.FirstPageNumber = x;
+                a = GetColumnsSheet(worksheet);
+                ogl.Range["A" + iii.ToString()].Value2 = iii;
+                ogl.Range["B" + iii.ToString()].Value2 = a.col1;
+                ogl.Range["C" + iii.ToString()].Value2 = a.col2;
+                ogl.Range["D" + iii.ToString()].Value2 = worksheet.PageSetup.FirstPageNumber; 
                 int i = worksheet.PageSetup.FirstPageNumber;
                 int j = worksheet.PageSetup.Pages.Count;
                 x = i + j;
             }
+            ogl.Range["A2", "D" + iii.ToString()].Cells.Borders.LineStyle = XlLineStyle.xlContinuous;
+            ogl.Range["A1", "D" + iii.ToString()].Cells.VerticalAlignment =
+                Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
             _pgBar.Value = 0;
             AdaptionSheets();
-            
+            ogl.Activate();
+            TimeSpan sp = DateTime.Now - dateTime;
+            MessageBox.Show("Перенумерация книги закончена!\r\n Время выполнения : " + sp.Seconds + " сек.", @"Внимание!", MessageBoxButtons.OK);
+        }
+
+        // Вытаскиваем из таблицы номер и наименование сметы или объекта
+        private Ogl GetColumnsSheet(_Worksheet worksheet) {
+            Ogl o = new Ogl();
+            string name = worksheet.Name.Substring(0, 2);
+            if (name.Equals("ОС")) {
+                o.col1 = @"Об.см. " + worksheet.Name.Substring(2);
+                o.col2 = worksheet.Range["A8"].Value2;
+                return o;
+            } else if (name.Equals("ЛС")) {
+                o.col1 = @"Лок.см. " + worksheet.Name.Substring(2);
+                o.col2 = worksheet.Range["A12"].Value2;
+                return o;
+            } else if (name.Equals("РС")) {
+                o.col1 = @"Лок.рес " + worksheet.Name.Substring(2);
+                o.col2 = worksheet.Range["A5"].Value2;
+                return o;
+            }
+            return o;
+            //Range range = worksheet.Cells.Find(@"ЛОКАЛЬНЫЙ СМЕТНЫЙ РАСЧЕТ");
+            //if (range != null) {
+            //    o.col1 = @"Лок.см. " + worksheet.Name.Substring(2);
+            //    o.col2 = worksheet.Range["D12"].Value2;
+            //    return o;
+            //}
+            //range = worksheet.Cells.Find(@"ОБЪЕКТНЫЙ СМЕТНЫЙ РАСЧЕТ");
+            //if (range != null) {
+            //    o.col1 = @"Об.см. " + worksheet.Name.Substring(2);
+            //    o.col2 = worksheet.Range["D8"].Value2;
+            //    return o;
+            //}
+            //range = worksheet.Cells.Find(@"ВЕДОМОСТЬ РЕСУРСОВ");
+            //if (range != null) {
+            //    o.col1 = @"Рес.вед. " + worksheet.Name.Substring(1);
+            //    o.col2 = worksheet.Range["C8"].Value2;
+            //    return o;
+            //}
         }
 
         // Вставить картинку

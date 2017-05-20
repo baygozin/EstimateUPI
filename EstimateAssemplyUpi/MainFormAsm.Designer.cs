@@ -53,6 +53,8 @@
             this.btnDelSheet = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tbBuilderMain = new System.Windows.Forms.TextBox();
+            this.tbGipMain = new System.Windows.Forms.TextBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.chbSave = new System.Windows.Forms.CheckBox();
             this.chbNumeric = new System.Windows.Forms.CheckBox();
@@ -120,8 +122,8 @@
             this.label30 = new System.Windows.Forms.Label();
             this.dateToStamp = new System.Windows.Forms.DateTimePicker();
             this.label19 = new System.Windows.Forms.Label();
-            this.tbGipMain = new System.Windows.Forms.TextBox();
-            this.tbBuilderMain = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.numberFirstPage = new System.Windows.Forms.TextBox();
             this.ctxMenuFileList.SuspendLayout();
             this.tabPageEstimate.SuspendLayout();
             this.tabControl2.SuspendLayout();
@@ -275,7 +277,7 @@
             this.lstSheet.HideSelection = false;
             this.lstSheet.Location = new System.Drawing.Point(6, 53);
             this.lstSheet.Name = "lstSheet";
-            this.lstSheet.Size = new System.Drawing.Size(756, 487);
+            this.lstSheet.Size = new System.Drawing.Size(756, 480);
             this.lstSheet.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.lstSheet.TabIndex = 1;
             this.lstSheet.UseCompatibleStateImageBehavior = false;
@@ -323,9 +325,9 @@
             // 
             this.pgBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pgBar.Location = new System.Drawing.Point(6, 534);
+            this.pgBar.Location = new System.Drawing.Point(6, 539);
             this.pgBar.Name = "pgBar";
-            this.pgBar.Size = new System.Drawing.Size(756, 13);
+            this.pgBar.Size = new System.Drawing.Size(756, 14);
             this.pgBar.Step = 1;
             this.pgBar.TabIndex = 34;
             // 
@@ -404,6 +406,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.numberFirstPage);
+            this.groupBox1.Controls.Add(this.label12);
             this.groupBox1.Controls.Add(this.tbBuilderMain);
             this.groupBox1.Controls.Add(this.tbGipMain);
             this.groupBox1.Controls.Add(this.groupBox5);
@@ -431,6 +435,22 @@
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Общие";
+            // 
+            // tbBuilderMain
+            // 
+            this.tbBuilderMain.Location = new System.Drawing.Point(21, 200);
+            this.tbBuilderMain.Name = "tbBuilderMain";
+            this.tbBuilderMain.Size = new System.Drawing.Size(356, 24);
+            this.tbBuilderMain.TabIndex = 47;
+            this.tbBuilderMain.Text = "Составил";
+            // 
+            // tbGipMain
+            // 
+            this.tbGipMain.Location = new System.Drawing.Point(21, 107);
+            this.tbGipMain.Name = "tbGipMain";
+            this.tbGipMain.Size = new System.Drawing.Size(356, 24);
+            this.tbGipMain.TabIndex = 46;
+            this.tbGipMain.Text = "ГИП";
             // 
             // groupBox5
             // 
@@ -1096,21 +1116,22 @@
             this.label19.TabIndex = 77;
             this.label19.Text = "Дата в штамп";
             // 
-            // tbGipMain
+            // label12
             // 
-            this.tbGipMain.Location = new System.Drawing.Point(21, 107);
-            this.tbGipMain.Name = "tbGipMain";
-            this.tbGipMain.Size = new System.Drawing.Size(356, 24);
-            this.tbGipMain.TabIndex = 46;
-            this.tbGipMain.Text = "ГИП";
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(18, 292);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(142, 17);
+            this.label12.TabIndex = 48;
+            this.label12.Text = "№ первой страницы";
             // 
-            // tbBuilderMain
+            // numberFirstPage
             // 
-            this.tbBuilderMain.Location = new System.Drawing.Point(21, 200);
-            this.tbBuilderMain.Name = "tbBuilderMain";
-            this.tbBuilderMain.Size = new System.Drawing.Size(356, 24);
-            this.tbBuilderMain.TabIndex = 47;
-            this.tbBuilderMain.Text = "Составил";
+            this.numberFirstPage.Location = new System.Drawing.Point(21, 312);
+            this.numberFirstPage.Name = "numberFirstPage";
+            this.numberFirstPage.Size = new System.Drawing.Size(139, 24);
+            this.numberFirstPage.TabIndex = 50;
+            this.numberFirstPage.Text = "4";
             // 
             // MainFormAsm
             // 
@@ -1249,6 +1270,8 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.TextBox tbBuilderMain;
         private System.Windows.Forms.TextBox tbGipMain;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox numberFirstPage;
     }
 }
 
