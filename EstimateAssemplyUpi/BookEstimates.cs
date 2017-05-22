@@ -106,6 +106,8 @@ namespace EstimatesAssembly {
             }
             Wb = Ex.Workbooks.Count == 0 ? Ex.Workbooks.Add() : Ex.ActiveWorkbook;
             _pgBar.Maximum = selectedItems.Length;
+            _pgBar.Minimum = 0;
+            _pgBar.Value = 0;
             foreach (string selectedItem in selectedItems) {
                 TmpWb = Ex.Workbooks.Open(selectedItem);
                 foreach (Worksheet sheet in TmpWb.Sheets) {
@@ -140,7 +142,7 @@ namespace EstimatesAssembly {
                     Wb.Sheets[myvar].Delete();
                 }
             }
-            SetActivePrinterPDF();
+            //SetActivePrinterPDF();
             SetDocumentProperty(propertyDocName, propertyDocValue);
         }
 
@@ -389,7 +391,7 @@ namespace EstimatesAssembly {
                             brr.Location = worksheet.Range["A" + Convert.ToString(t1 - 12)];
                         }
                     }
-                    Release(hbreaks);
+                    //Release(hbreaks);
                 }
             }
             _pgBar.Value = 0;
@@ -403,10 +405,19 @@ namespace EstimatesAssembly {
 
         // Найти последнюю используемую строку
         private int FindLastRow(Worksheet worksheet) {
-            int lastCol = worksheet.UsedRange.Columns.Count;
+            int lastRow;
+            int lastCol;
+            lastCol = worksheet.UsedRange.Columns.Count;
             int fullRow = worksheet.Rows.Count;
-            int lastRow = worksheet.Cells[fullRow, 1].End(XlDirection.xlUp).Row;
-
+            if (worksheet.Name.Contains("СС")) { 
+                lastRow = ((Range) worksheet.Cells[fullRow, 1]).Find("Составил :").Row + 3;
+            } else if (worksheet.Name.Contains("РС") || worksheet.Name.Contains("ЛС")) {
+                lastRow = ((Range)worksheet.Cells[fullRow, 1]).Find("Проверил :").Row + 3;
+            } else if (worksheet.Name.Contains("ОС")) {
+                lastRow = ((Range)worksheet.Cells[fullRow, 1]).Find("Руководитель группы смет :").Row + 3;
+            } else {
+                lastRow = worksheet.Cells[fullRow, 1].End(XlDirection.xlUp).Row;
+            }
             for (int i = 0; i < lastRow; i++) {
                 Range range = worksheet.Cells[i + 1, 1];
                 var mergeCells = range.MergeCells;

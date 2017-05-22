@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -16,6 +17,9 @@ namespace EstimatesAssembly {
         private BookEstimates _book;
         private VolumeAsm _volumeAsm;
         private readonly string _configfile;
+        private string _logfile;
+        private FileInfo fi;
+        private StreamWriter fileLog;
         private initBookmark InitBookmark = new initBookmark();
         private readonly ListViewColumnSorter _lvwColumnSorter = new ListViewColumnSorter();
         public static Config iniSet = new Config();
@@ -28,21 +32,33 @@ namespace EstimatesAssembly {
             _book = new BookEstimates();
             _volumeAsm = new VolumeAsm();
             _configfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\estimate.xml";
+            _logfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\logfile.txt";
+            fi = new FileInfo(_logfile);
+            if (!fi.Exists) {
+                fileLog = fi.CreateText();
+            } else {
+                fileLog = fi.AppendText();
+            }
+            fileLog.WriteLineAsync(@"Program start...");
             _book.PgBar = pgBar;
             this.lstSheet.ListViewItemSorter = _lvwColumnSorter;
             // перехватчики глобальных исключений
             AppDomain.CurrentDomain.UnhandledException += delegate (object sender, UnhandledExceptionEventArgs args)
             {
                 allQuit();
+                fileLog.WriteLineAsync(DateTime.Now.ToString());
+                fileLog.WriteLineAsync("Global exception: " + args.ExceptionObject.ToString());
                 Trace.WriteLine("Global exception: " + args.ExceptionObject.ToString());
+                Environment.Exit(10);
             };
             Application.ThreadException += delegate (Object sender, ThreadExceptionEventArgs args)
             {
                 allQuit();
+                fileLog.WriteLineAsync(DateTime.Now.ToString());
+                fileLog.WriteLineAsync("Global exception: " + args.Exception.ToString());
                 Trace.WriteLine("Global exception: " + args.Exception.ToString());
-                Environment.Exit(0);
+                Environment.Exit(11);
             };
-
         }
 
         public void allQuit() {
@@ -79,6 +95,8 @@ namespace EstimatesAssembly {
 
         // Выход из программы
         private void button1_Click(object sender, EventArgs e) {
+            _book.ShowExcel(false);
+            _book.Ex.Quit();
             _book.CloseBook();
             SaveConfig();
             Close();
@@ -96,6 +114,7 @@ namespace EstimatesAssembly {
         // Закрытие главной формы
         private void MainFormAsm_FormClosing(object sender, FormClosingEventArgs e) {
             SaveConfig(); // сохраняем настройки
+            fileLog.Close();
         }
 
         // Сохранение настроек в классе и сериализация в XML
