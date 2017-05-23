@@ -89,12 +89,27 @@ namespace EstimatesAssembly {
         }
         // Тип сметы
         public static int FindTypeSheet(Worksheet sheet) {
-            if (sheet.Cells.Find(@"ЛОКАЛЬНЫЙ СМЕТНЫЙ РАСЧЕТ №") != null) { return 1; }
-            if (sheet.Cells.Find(@"ОБЪЕКТНЫЙ СМЕТНЫЙ РАСЧЕТ №") != null) { return 2; }
-            if (sheet.Cells.Find(@"ВЕДОМОСТЬ РЕСУРСОВ") != null) { return 3; }
-            if (sheet.Cells.Find(@"ВЕДОМОСТЬ ОБЪЕМОВ РАБОТ №") != null) { return 4; }
-            if (sheet.Cells.Find(@"СВОДНЫЙ СМЕТНЫЙ РАСЧЕТ СТОИМОСТИ СТРОИТЕЛЬСТВА") != null) { return 5; }
-            if (sheet.Cells.Find(@"Локальный ресурсный сметный расчет") != null) { return 6; }
+            if (sheet.Cells.Find(@"ЛОКАЛЬНЫЙ СМЕТНЫЙ РАСЧЕТ №", Type.Missing, XlFindLookIn.xlValues, XlLookAt.xlPart,
+                    XlSearchOrder.xlByRows, XlSearchDirection.xlNext, true, Type.Missing, Type.Missing) != null) 
+                    { return 1; }
+            if (sheet.Cells.Find(@"ОБЪЕКТНЫЙ СМЕТНЫЙ РАСЧЕТ №", Type.Missing, XlFindLookIn.xlValues, XlLookAt.xlPart,
+                    XlSearchOrder.xlByRows, XlSearchDirection.xlNext, true, Type.Missing, Type.Missing) != null) 
+                    { return 2; }
+            if (sheet.Cells.Find(@"ВЕДОМОСТЬ РЕСУРСОВ", Type.Missing, XlFindLookIn.xlValues, XlLookAt.xlWhole,
+                    XlSearchOrder.xlByRows, XlSearchDirection.xlNext, true, Type.Missing, Type.Missing) != null) 
+                    { return 3; }
+            if (sheet.Cells.Find(@"ВЕДОМОСТЬ ОБЪЕМОВ РАБОТ №", Type.Missing, XlFindLookIn.xlValues, XlLookAt.xlPart,
+                    XlSearchOrder.xlByRows, XlSearchDirection.xlNext, true, Type.Missing, Type.Missing) != null) 
+                    { return 4; }
+            if (sheet.Cells.Find(@"СВОДНЫЙ СМЕТНЫЙ РАСЧЕТ СТОИМОСТИ СТРОИТЕЛЬСТВА", Type.Missing, XlFindLookIn.xlValues, XlLookAt.xlWhole,
+                    XlSearchOrder.xlByRows, XlSearchDirection.xlNext, true, Type.Missing, Type.Missing) != null) 
+                    { return 5; }
+            if (sheet.Cells.Find(@"Локальный ресурсный сметный расчет", Type.Missing, XlFindLookIn.xlValues, XlLookAt.xlWhole,
+                    XlSearchOrder.xlByRows, XlSearchDirection.xlNext, true, Type.Missing, Type.Missing) != null) 
+                    { return 6; }
+            if (sheet.Cells.Find(@"СВОДНАЯ ВЕДОМОСТЬ РЕСУРСОВ", Type.Missing, XlFindLookIn.xlValues, XlLookAt.xlWhole,
+                    XlSearchOrder.xlByRows, XlSearchDirection.xlNext, true, Type.Missing, Type.Missing) != null) 
+                    { return 7; }
             return 0;
         }
 
@@ -130,6 +145,9 @@ namespace EstimatesAssembly {
                             break;
                         case 6:
                             WorkWithExcelLRS(sheet); // Локальная ресурсная смета
+                            break;
+                        case 7:
+                            WorkWithExcelSVR(sheet); // СВОДНАЯ ВЕДОМОСТЬ РЕСУРСОВ
                             break;
                     }
                     sheet.Copy(Type.Missing, Wb.ActiveSheet);
@@ -189,7 +207,7 @@ namespace EstimatesAssembly {
 
         // Сохранение тома
         public void SaveWorkbook() {
-            string fullname = Path.Combine(_pathBook, _nameBook + @".xlsx");
+            string fullname = Path.Combine(_pathBook, "КнигаСмет" + @".xlsx");
             if (File.Exists(fullname)) {
                 DialogResult dlgres = MessageBox.Show(@"Книга уже существует. Переписать?", @"Внимание!",
                     MessageBoxButtons.OKCancel);
@@ -286,7 +304,7 @@ namespace EstimatesAssembly {
 
         // Компаратор для сортировщика
         public int Compare(String x, String y) {
-            Regex pattern = new Regex(@"(?:[ЛОРСЕ]+?[С]?)(?<ss>(\(?(\d{2,4})[-|\.])*(\d{1,4})(\)?))");
+            Regex pattern = new Regex(@"(?:[ЛОРСЕ]+?[СВ]?)(?<ss>(\(?(\d{2,4})[-|\.])*(\d{1,4})(\)?))");
             MatchCollection mc1 = pattern.Matches(x);
             MatchCollection mc2 = pattern.Matches(y);
             if (mc1.Count == 0) {
@@ -305,6 +323,12 @@ namespace EstimatesAssembly {
             }
             if (yi > 0) {
                 y = y.Remove(yi);
+            }
+            if (x.IndexOf(" ") > 0) {
+                x = x.Substring(0, x.IndexOf(" "));
+            }
+            if (y.IndexOf(" ") > 0) {
+                y = y.Substring(0, y.IndexOf(" "));
             }
             if (TwoChar(x)) {
                 xx1 = Int64.Parse(x.Substring(2).Replace("-", "").Replace(".", "").Replace("(", "").Replace(" ", "").Replace(")", "").PadRight(14, '0'));
@@ -339,7 +363,7 @@ namespace EstimatesAssembly {
 
         // В названии первых символов - два?
         private bool TwoChar(string s) {
-            if (s.Contains("С")) {
+            if (s.Contains("С") || s.Contains("В")) {
                 return true;
             }
             return false;
@@ -360,6 +384,8 @@ namespace EstimatesAssembly {
                     return 4;
                 case "РС":
                     return 5;
+                case "РВ":
+                    return 6;
                 default:
                     return 0;
             }
@@ -386,9 +412,9 @@ namespace EstimatesAssembly {
                         int t1 = range.Row;
                         int diff = t - t1;
                         Ex.ActiveWindow.View = XlWindowView.xlPageBreakPreview;
-                        if (diff < 12 && diff > 0) {
+                        if (diff < 13 && diff > 0) {
                             HPageBreak brr = hbreaks.Item[pageCount];
-                            brr.Location = worksheet.Range["A" + Convert.ToString(t1 - 12)];
+                            brr.Location = worksheet.Range["A" + Convert.ToString(t1 - 13)];
                         }
                     }
                     //Release(hbreaks);
@@ -410,13 +436,13 @@ namespace EstimatesAssembly {
             lastCol = worksheet.UsedRange.Columns.Count;
             int fullRow = worksheet.Rows.Count;
             if (worksheet.Name.Contains("СС")) { 
-                lastRow = ((Range) worksheet.Cells[fullRow, 1]).Find("Составил :").Row + 3;
+                lastRow = ((Range) worksheet.Cells[fullRow, 1]).Find("Составил :").Row + 4;
             } else if (worksheet.Name.Contains("РС") || worksheet.Name.Contains("ЛС")) {
-                lastRow = ((Range)worksheet.Cells[fullRow, 1]).Find("Проверил :").Row + 3;
+                lastRow = ((Range)worksheet.Cells[fullRow, 1]).Find("Проверил :").Row + 4;
             } else if (worksheet.Name.Contains("ОС")) {
-                lastRow = ((Range)worksheet.Cells[fullRow, 1]).Find("Руководитель группы смет :").Row + 3;
+                lastRow = ((Range)worksheet.Cells[fullRow, 1]).Find("Руководитель группы смет :").Row + 4;
             } else {
-                lastRow = worksheet.Cells[fullRow, 1].End(XlDirection.xlUp).Row;
+                lastRow = worksheet.Cells[fullRow, 1].End(XlDirection.xlUp).Row + 4;
             }
             for (int i = 0; i < lastRow; i++) {
                 Range range = worksheet.Cells[i + 1, 1];
@@ -516,29 +542,24 @@ namespace EstimatesAssembly {
                 o.col2 = worksheet.Range["A12"].Value2;
                 return o;
             } else if (name.Equals("РС")) {
-                o.col1 = @"Лок.рес " + worksheet.Name.Substring(2);
+                o.col1 = @"Лок.рес. " + worksheet.Name.Substring(2);
                 o.col2 = worksheet.Range["A5"].Value2;
+                return o;
+            } else if (name.Equals("РВ")) {
+                o.col1 = @"Лок.вед.рес.";
+                o.col2 = "Локальная ведомость ресурсов";
+                return o;
+            } else if (name.Equals("СС")) {
+                o.col1 = @"Свод.смет.расч.";
+                if (worksheet.Name.Substring(2).Contains("00")) {
+                    o.col2 = "в текущих ценах";
+                }
+                else {
+                    o.col2 = "в базовых ценах";
+                }
                 return o;
             }
             return o;
-            //Range range = worksheet.Cells.Find(@"ЛОКАЛЬНЫЙ СМЕТНЫЙ РАСЧЕТ");
-            //if (range != null) {
-            //    o.col1 = @"Лок.см. " + worksheet.Name.Substring(2);
-            //    o.col2 = worksheet.Range["D12"].Value2;
-            //    return o;
-            //}
-            //range = worksheet.Cells.Find(@"ОБЪЕКТНЫЙ СМЕТНЫЙ РАСЧЕТ");
-            //if (range != null) {
-            //    o.col1 = @"Об.см. " + worksheet.Name.Substring(2);
-            //    o.col2 = worksheet.Range["D8"].Value2;
-            //    return o;
-            //}
-            //range = worksheet.Cells.Find(@"ВЕДОМОСТЬ РЕСУРСОВ");
-            //if (range != null) {
-            //    o.col1 = @"Рес.вед. " + worksheet.Name.Substring(1);
-            //    o.col2 = worksheet.Range["C8"].Value2;
-            //    return o;
-            //}
         }
 
         // Вставить картинку
@@ -678,24 +699,24 @@ namespace EstimatesAssembly {
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignRight;
 
                 rangeWork = sheet.Cells[rowGip, "D"];
-                rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.CbGipText;
+                rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.TbGipMain;
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignLeft;
                 rangeWork = sheet.Cells[rowBoss, "D"];
                 rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.TbHeadDepartment;
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignLeft;
                 rangeWork = sheet.Cells[rowMadeIn, "D"];
-                rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.CbMadeInText;
+                rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.TbBuilderMain;
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignLeft;
                 // Вставим картинки
                 if (MainFormAsm.iniSet.CbInsertSignSS) {
                     if (!MainFormAsm.iniSet.TbGipMain.Equals("")) {
-                        InsertImage(ref sheet, rowGip, 5, MainFormAsm.iniSet.CbGipText);
+                        InsertImage(ref sheet, rowGip, 5, MainFormAsm.iniSet.TbGipMain);
                     }
                     if (!MainFormAsm.iniSet.TbHeadDepartment.Equals("")) {
                         InsertImage(ref sheet, rowBoss, 5, MainFormAsm.iniSet.TbHeadDepartment);
                     }
                     if (!MainFormAsm.iniSet.TbBuilderMain.Equals("")) {
-                        InsertImage(ref sheet, rowMadeIn, 5, MainFormAsm.iniSet.CbMadeInText);
+                        InsertImage(ref sheet, rowMadeIn, 5, MainFormAsm.iniSet.TbBuilderMain);
                     }
                 }
             }
@@ -705,7 +726,9 @@ namespace EstimatesAssembly {
         // Обработка локального ресурсного сметного расчета
         private void WorkWithExcelLRS(Worksheet sheet) {
             sheet.UsedRange.Font.Name = "Times New Roman";
-            Range find = sheet.Cells.Find("к Локальной смете №");
+            Range find = sheet.Cells.Find("к Локальной смете №", Type.Missing,
+            XlFindLookIn.xlValues, XlLookAt.xlPart, XlSearchOrder.xlByRows,
+            XlSearchDirection.xlNext, false, false, false);
             string number = find.Value2;
             number = number.Substring(number.IndexOf("№") + 2);
             sheet.Name = "РС" + number;
@@ -773,6 +796,13 @@ namespace EstimatesAssembly {
                 }
             }
 
+        }
+        // СВОДНАЯ ВЕДОМОСТЬ РЕСУРСОВ (F1). Обработка
+        private void WorkWithExcelSVR(Worksheet sheet) {
+            sheet.UsedRange.Font.Name = "Times New Roman";
+            Range columnB = sheet.Range["B:B"];
+            columnB.EntireColumn.ColumnWidth = (((float) columnB.EntireColumn.ColumnWidth) / 100) * 80;
+            sheet.Name = "РВ99";
         }
 
         // Локальные сметы. Обработка
@@ -970,13 +1000,13 @@ namespace EstimatesAssembly {
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignRight;
 
                 rangeWork = sheet.Cells[rowGip, "D"];
-                rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.CbGipText;
+                rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.TbGipMain;
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignLeft;
                 rangeWork = sheet.Cells[rowBoss, "D"];
                 rangeWork.Value2 = "_____________________________" + MainFormAsm.iniSet.TbHeadDepartment;
                 rangeWork.HorizontalAlignment = XlHAlign.xlHAlignLeft;
                 if (!MainFormAsm.iniSet.TbGipMain.Equals("")) {
-                    InsertImage(ref sheet, rowGip, 5, MainFormAsm.iniSet.CbGipText);
+                    InsertImage(ref sheet, rowGip, 5, MainFormAsm.iniSet.TbGipMain);
                 }
                 if (!MainFormAsm.iniSet.TbHeadDepartment.Equals("")) {
                     InsertImage(ref sheet, rowBoss, 5, MainFormAsm.iniSet.TbHeadDepartment);

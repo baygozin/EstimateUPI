@@ -173,6 +173,8 @@ namespace EstimatesAssembly {
                     numVolumeNumber.Text = iniSet.NumVolumeNumber;
                     tbInventoryNumber.Text = iniSet.TbInventoryNumber;
                     cbStageDevelope.Text = iniSet.CbStageDevelope;
+                    tbGipMain.Text = iniSet.TbGipMain;
+                    tbBuilderMain.Text = iniSet.TbBuilderMain;
                     tbChiefEngineerMain.Text = iniSet.TbChiefEngineer;
                     tbHeadDepartmentMain.Text = iniSet.TbHeadDepartment;
                     dateToStamp.Value = iniSet.DateToStamp;
